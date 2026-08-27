@@ -9,24 +9,35 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
   :root{
-    --navy:#16213E;
-    --navy-2:#1E2D52;
-    --paper:#F6F3EC;
-    --paper-2:#EDE8DB;
-    --gold:#C9A24B;
-    --teal:#2E6E62;
-    --coral:#C0574A;
-    --ink:#1B1B1B;
-    --ink-soft:#5B5A55;
-    --line: rgba(27,27,27,0.12);
+    --bg:#0A0E1A;
+    --bg-2:#0F1428;
+    --surface: rgba(255,255,255,0.045);
+    --surface-hi: rgba(255,255,255,0.075);
+    --border: rgba(255,255,255,0.10);
+    --border-hi: rgba(255,255,255,0.18);
+    --ink:#F3F1E9;
+    --ink-soft:#9BA3B8;
+    --ink-dim:#6B7387;
+    --gold:#E7B84F;
+    --gold-dim: rgba(231,184,79,0.35);
+    --teal:#49CBA6;
+    --teal-dim: rgba(73,203,166,0.35);
+    --coral:#E76F5F;
+    --radius:18px;
   }
   *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
   html,body{margin:0;padding:0;}
   body{
-    background:var(--paper);
+    background:
+      radial-gradient(1100px 600px at 12% -10%, rgba(73,203,166,0.10), transparent 60%),
+      radial-gradient(900px 700px at 100% 0%, rgba(231,184,79,0.09), transparent 55%),
+      radial-gradient(1200px 900px at 50% 120%, rgba(90,110,220,0.08), transparent 60%),
+      var(--bg);
     color:var(--ink);
     font-family:'Inter',sans-serif;
     -webkit-font-smoothing:antialiased;
+    min-height:100vh;
   }
   h1,h2,h3,.display{
     font-family:'Fraunces',serif;
@@ -39,154 +50,197 @@
   button{font-family:inherit;cursor:pointer;}
   .hidden{display:none !important;}
 
+  @keyframes fadeUp{ from{opacity:0; transform:translateY(10px);} to{opacity:1; transform:translateY(0);} }
+  .view-enter{ animation: fadeUp .5s cubic-bezier(.2,.7,.3,1) both; }
+  @media (prefers-reduced-motion: reduce){ .view-enter{ animation:none; } * { transition:none !important; scroll-behavior:auto !important;} }
+
   /* ---------- NAV ---------- */
   nav{
     display:flex;align-items:center;justify-content:space-between;
-    padding:20px 40px;background:var(--navy);color:var(--paper);
+    padding:18px 40px;
+    background:rgba(10,14,26,0.72);
+    backdrop-filter:blur(14px);
+    -webkit-backdrop-filter:blur(14px);
+    border-bottom:1px solid var(--border);
     position:sticky;top:0;z-index:50;
   }
-  .brand{display:flex;align-items:baseline;gap:10px;}
+  .brand{display:flex;align-items:center;gap:12px;}
   .brand .mark{
-    width:34px;height:34px;border-radius:8px;
-    background:linear-gradient(135deg,var(--gold),#e7c777);
+    width:36px;height:36px;border-radius:10px;
+    background:linear-gradient(135deg,var(--gold),#f4d68a);
     display:flex;align-items:center;justify-content:center;
-    font-family:'Fraunces',serif;font-weight:700;color:var(--navy);font-size:18px;
+    font-family:'Fraunces',serif;font-weight:700;color:#1a1506;font-size:18px;
+    box-shadow:0 0 0 1px rgba(0,0,0,0.15), 0 6px 18px -6px rgba(231,184,79,0.55);
   }
-  .brand-name{font-family:'Fraunces',serif;font-size:19px;font-weight:600;}
-  .brand-sub{font-size:11px;color:var(--gold);text-transform:uppercase;letter-spacing:.12em;}
+  .brand-name{font-family:'Fraunces',serif;font-size:18px;font-weight:600;line-height:1.1;}
+  .brand-sub{font-size:10.5px;color:var(--gold);text-transform:uppercase;letter-spacing:.14em;}
   .nav-actions{display:flex;align-items:center;gap:14px;}
   .pill{
-    padding:9px 18px;border-radius:999px;border:1px solid rgba(246,243,236,0.35);
-    background:transparent;color:var(--paper);font-size:14px;font-weight:500;
-    transition:all .15s ease;
+    padding:9px 18px;border-radius:999px;border:1px solid var(--border-hi);
+    background:transparent;color:var(--ink);font-size:13.5px;font-weight:500;
+    transition:all .18s ease;
   }
-  .pill:hover{background:rgba(246,243,236,0.12);}
-  .pill.solid{background:var(--gold);color:var(--navy);border:none;font-weight:600;}
-  .pill.solid:hover{background:#dab35e;}
-  .who{font-size:13px;color:var(--paper-2);}
+  .pill:hover{background:var(--surface-hi);border-color:var(--border-hi);}
+  .pill.solid{
+    background:linear-gradient(135deg,var(--gold),#f0c766);color:#1a1506;border:none;font-weight:700;
+    box-shadow:0 8px 20px -8px rgba(231,184,79,0.6);
+  }
+  .pill.solid:hover{transform:translateY(-1px); box-shadow:0 12px 26px -10px rgba(231,184,79,0.7);}
+  .who{font-size:13px;color:var(--ink-soft);}
 
-  main{max-width:1080px;margin:0 auto;padding:0 40px;}
+  main{max-width:1100px;margin:0 auto;padding:0 40px;}
+
+  /* ---------- GLASS CARD BASE ---------- */
+  .glass{
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    backdrop-filter:blur(10px);
+    -webkit-backdrop-filter:blur(10px);
+  }
 
   /* ---------- LANDING ---------- */
   .hero{
     display:grid;grid-template-columns:1.15fr 0.85fr;gap:56px;
-    padding:76px 0 60px;align-items:center;
+    padding:88px 0 60px;align-items:center;
   }
   .eyebrow{
-    font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--teal);
+    font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--teal);
     font-weight:600;margin-bottom:18px;display:block;
   }
-  .hero h1{font-size:clamp(34px,4.6vw,54px);line-height:1.06;}
-  .hero h1 em{font-style:normal;color:var(--teal);}
-  .hero p.lede{font-size:17px;line-height:1.65;color:var(--ink-soft);margin-top:22px;max-width:46ch;}
-  .hero-stats{display:flex;gap:30px;margin-top:34px;}
+  .hero h1{font-size:clamp(34px,4.6vw,54px);line-height:1.08;color:var(--ink);}
+  .hero h1 em{font-style:normal;background:linear-gradient(100deg,var(--teal),#8fe3cc);-webkit-background-clip:text;background-clip:text;color:transparent;}
+  .hero p.lede{font-size:16.5px;line-height:1.7;color:var(--ink-soft);margin-top:22px;max-width:46ch;}
+  .hero-stats{display:flex;gap:30px;margin-top:36px;}
   .hero-stats div{border-left:2px solid var(--gold);padding-left:12px;}
-  .hero-stats .num{font-family:'IBM Plex Mono',monospace;font-size:22px;font-weight:600;}
-  .hero-stats .lbl{font-size:12px;color:var(--ink-soft);margin-top:2px;}
+  .hero-stats .num{font-family:'IBM Plex Mono',monospace;font-size:22px;font-weight:600;color:var(--ink);}
+  .hero-stats .lbl{font-size:11.5px;color:var(--ink-dim);margin-top:2px;}
 
   /* signature: readiness compass */
   .compass-card{
-    background:var(--navy);border-radius:20px;padding:30px;color:var(--paper);
-    box-shadow:0 20px 50px -20px rgba(22,33,62,0.55);
+    padding:30px;
+    box-shadow:0 30px 60px -30px rgba(0,0,0,0.6);
+    position:relative;
+    overflow:hidden;
   }
-  .compass-card h3{font-size:15px;font-weight:500;color:var(--paper-2);margin-bottom:6px;}
-  .compass-card .compass-title{font-family:'Fraunces',serif;font-size:20px;margin-bottom:18px;}
-  .compass-legend{display:flex;flex-direction:column;gap:8px;margin-top:16px;}
-  .compass-legend .row{display:flex;justify-content:space-between;font-size:13px;color:var(--paper-2);}
+  .compass-card::before{
+    content:'';position:absolute;inset:0;
+    background:radial-gradient(220px 220px at 70% 10%, rgba(231,184,79,0.14), transparent 70%);
+    pointer-events:none;
+  }
+  .compass-card h3{font-size:14px;font-weight:500;color:var(--ink-soft);margin-bottom:6px;}
+  .compass-card .compass-title{font-family:'Fraunces',serif;font-size:19px;margin-bottom:18px;color:var(--ink);}
+  .compass-legend{display:flex;flex-direction:column;gap:9px;margin-top:16px;}
+  .compass-legend .row{display:flex;justify-content:space-between;font-size:12.5px;color:var(--ink-soft);}
   .compass-legend .row b{color:var(--gold);font-family:'IBM Plex Mono',monospace;}
+  .compass-legend .dot{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:7px;}
 
   /* ---------- AUTH CARD ---------- */
-  .auth-wrap{display:flex;justify-content:center;padding:50px 0 90px;}
+  .auth-wrap{display:flex;justify-content:center;padding:40px 0 100px;}
   .auth-card{
-    width:100%;max-width:400px;background:#fff;border:1px solid var(--line);
-    border-radius:18px;padding:36px;box-shadow:0 24px 48px -30px rgba(22,33,62,0.35);
+    width:100%;max-width:400px;padding:36px;
+    box-shadow:0 30px 70px -30px rgba(0,0,0,0.65);
   }
-  .auth-tabs{display:flex;gap:4px;background:var(--paper-2);padding:4px;border-radius:10px;margin-bottom:24px;}
-  .auth-tab{flex:1;text-align:center;padding:9px 0;border:none;background:transparent;border-radius:8px;font-size:14px;font-weight:600;color:var(--ink-soft);}
-  .auth-tab.active{background:var(--navy);color:var(--paper);}
+  .auth-tabs{display:flex;gap:4px;background:rgba(255,255,255,0.05);padding:4px;border-radius:11px;margin-bottom:24px;border:1px solid var(--border);}
+  .auth-tab{flex:1;text-align:center;padding:9px 0;border:none;background:transparent;border-radius:8px;font-size:13.5px;font-weight:600;color:var(--ink-dim);transition:all .18s ease;}
+  .auth-tab.active{background:var(--ink);color:var(--bg);}
   .field{margin-bottom:14px;}
   .field label{font-size:12px;font-weight:600;color:var(--ink-soft);display:block;margin-bottom:6px;}
   .field input{
-    width:100%;padding:11px 13px;border:1px solid var(--line);border-radius:9px;
-    font-size:14px;font-family:inherit;background:var(--paper);
+    width:100%;padding:11px 13px;border:1px solid var(--border);border-radius:10px;
+    font-size:14px;font-family:inherit;background:rgba(255,255,255,0.03);color:var(--ink);
+    transition:border-color .15s ease;
   }
-  .field input:focus{outline:2px solid var(--teal);outline-offset:1px;}
+  .field input::placeholder{color:var(--ink-dim);}
+  .field input:focus{outline:none;border-color:var(--teal);box-shadow:0 0 0 3px rgba(73,203,166,0.15);}
   .btn-primary{
-    width:100%;padding:12px 0;border:none;border-radius:9px;background:var(--teal);
-    color:#fff;font-weight:600;font-size:15px;margin-top:6px;
+    width:100%;padding:12px 0;border:none;border-radius:10px;
+    background:linear-gradient(135deg,var(--teal),#63e0bd);
+    color:#062820;font-weight:700;font-size:14.5px;margin-top:6px;
+    box-shadow:0 10px 26px -10px rgba(73,203,166,0.55);
+    transition:transform .15s ease, box-shadow .15s ease;
   }
-  .btn-primary:hover{background:#255c52;}
+  .btn-primary:hover{transform:translateY(-1px); box-shadow:0 14px 30px -10px rgba(73,203,166,0.65);}
   .auth-msg{font-size:13px;margin-top:12px;min-height:18px;}
   .auth-msg.err{color:var(--coral);}
   .auth-msg.ok{color:var(--teal);}
-  .auth-note{font-size:12px;color:var(--ink-soft);margin-top:18px;line-height:1.5;}
+  .auth-note{font-size:11.5px;color:var(--ink-dim);margin-top:18px;line-height:1.6;}
+  .auth-note code{color:var(--ink-soft);}
 
   /* ---------- DASHBOARD ---------- */
-  .dash-head{padding:44px 0 8px;}
+  .dash-head{padding:48px 0 8px;}
   .dash-head .eyebrow{margin-bottom:8px;}
-  .dash-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px;margin:34px 0 50px;}
+  .dash-head h2{font-size:30px;color:var(--ink);}
+  .dash-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px;margin:34px 0 56px;}
   .cat-card{
-    background:#fff;border:1px solid var(--line);border-radius:16px;padding:24px;
+    padding:24px;
     display:flex;flex-direction:column;gap:14px;
+    transition:transform .2s ease, border-color .2s ease;
   }
-  .cat-card .tag{font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:var(--teal);font-weight:700;}
-  .cat-card h3{font-size:19px;}
-  .cat-card p{font-size:13.5px;color:var(--ink-soft);line-height:1.5;margin:0;flex:1;}
+  .cat-card:hover{transform:translateY(-3px);border-color:var(--border-hi);}
+  .cat-card .tag{font-size:10.5px;text-transform:uppercase;letter-spacing:.1em;color:var(--teal);font-weight:700;}
+  .cat-card h3{font-size:18.5px;color:var(--ink);}
+  .cat-card p{font-size:13.5px;color:var(--ink-soft);line-height:1.55;margin:0;flex:1;}
   .cat-card .score-line{display:flex;justify-content:space-between;align-items:center;}
-  .cat-card .score-line .val{font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:15px;}
-  .cat-card .bar{height:6px;background:var(--paper-2);border-radius:6px;overflow:hidden;}
-  .cat-card .bar span{display:block;height:100%;background:var(--gold);}
+  .cat-card .score-line span:first-child{font-size:12.5px;color:var(--ink-dim);}
+  .cat-card .score-line .val{font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:15px;color:var(--ink);}
+  .cat-card .bar{height:6px;background:rgba(255,255,255,0.07);border-radius:6px;overflow:hidden;}
+  .cat-card .bar span{display:block;height:100%;background:linear-gradient(90deg,var(--gold),#f4d68a);border-radius:6px;transition:width .6s cubic-bezier(.2,.7,.3,1);}
   .cat-card button{
-    padding:10px 0;border-radius:8px;border:1px solid var(--navy);background:var(--navy);
-    color:var(--paper);font-weight:600;font-size:14px;
+    padding:10px 0;border-radius:10px;border:1px solid var(--border-hi);background:rgba(255,255,255,0.05);
+    color:var(--ink);font-weight:600;font-size:13.5px;transition:all .18s ease;
   }
+  .cat-card button:hover{background:var(--ink);color:var(--bg);}
   .compass-section{padding:10px 0 60px;display:grid;grid-template-columns:340px 1fr;gap:40px;align-items:center;}
-  .history{padding-top:6px;}
-  .history h3{font-size:16px;margin-bottom:14px;}
+  .history h3{font-size:15.5px;margin-bottom:14px;color:var(--ink);}
   .history-row{
-    display:flex;justify-content:space-between;padding:11px 0;border-bottom:1px solid var(--line);font-size:13.5px;
+    display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--border);font-size:13.5px;
   }
-  .history-row .cat{font-weight:600;}
-  .history-row .when{color:var(--ink-soft);font-size:12px;}
-  .empty-note{color:var(--ink-soft);font-size:13.5px;}
+  .history-row .cat{font-weight:600;color:var(--ink);}
+  .history-row .when{color:var(--ink-dim);font-size:12px;}
+  .empty-note{color:var(--ink-dim);font-size:13.5px;}
 
   /* ---------- QUIZ ---------- */
   .quiz-wrap{max-width:680px;margin:0 auto;padding:50px 0 90px;}
   .quiz-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:26px;}
-  .quiz-top .progress-track{flex:1;height:6px;background:var(--paper-2);border-radius:6px;margin:0 20px;overflow:hidden;}
-  .quiz-top .progress-fill{height:100%;background:var(--teal);}
-  .quiz-top .qcount{font-family:'IBM Plex Mono',monospace;font-size:13px;white-space:nowrap;}
+  .quiz-top .progress-track{flex:1;height:6px;background:rgba(255,255,255,0.07);border-radius:6px;margin:0 20px;overflow:hidden;}
+  .quiz-top .progress-fill{height:100%;background:linear-gradient(90deg,var(--teal),#8fe3cc);transition:width .4s ease;}
+  .quiz-top .qcount{font-family:'IBM Plex Mono',monospace;font-size:13px;white-space:nowrap;color:var(--ink-soft);}
   .quiz-cat-badge{
     display:inline-block;font-size:11px;text-transform:uppercase;letter-spacing:.1em;
     color:var(--teal);font-weight:700;margin-bottom:10px;
   }
-  .quiz-q{font-size:20px;line-height:1.5;margin-bottom:26px;font-family:'Fraunces',serif;font-weight:600;}
+  .quiz-q{font-size:20px;line-height:1.5;margin-bottom:26px;font-family:'Fraunces',serif;font-weight:600;color:var(--ink);}
   .opt{
     display:block;width:100%;text-align:left;padding:15px 18px;margin-bottom:10px;
-    border:1.5px solid var(--line);border-radius:12px;background:#fff;font-size:14.5px;
-    transition:all .12s ease;
+    border:1.5px solid var(--border);border-radius:13px;background:rgba(255,255,255,0.03);
+    color:var(--ink);font-size:14.5px;
+    transition:all .15s ease;
   }
-  .opt:hover{border-color:var(--teal);}
-  .opt.selected{border-color:var(--navy);background:var(--navy-2);color:var(--paper);}
-  .opt.correct{border-color:var(--teal);background:#EAF3F0;}
-  .opt.wrong{border-color:var(--coral);background:#F7EAE7;}
+  .opt:hover:not(:disabled){border-color:var(--teal);background:rgba(73,203,166,0.06);}
+  .opt.selected{border-color:var(--ink-soft);}
+  .opt.correct{border-color:var(--teal);background:rgba(73,203,166,0.14);}
+  .opt.wrong{border-color:var(--coral);background:rgba(231,111,95,0.14);}
   .quiz-actions{display:flex;justify-content:space-between;margin-top:26px;}
-  .btn-ghost{padding:11px 20px;border-radius:9px;border:1px solid var(--line);background:transparent;font-weight:600;font-size:14px;}
-  .btn-next{padding:11px 24px;border-radius:9px;border:none;background:var(--navy);color:var(--paper);font-weight:600;font-size:14px;}
-  .btn-next:disabled{opacity:.4;}
-  .explain{margin-top:16px;padding:14px 16px;background:var(--paper-2);border-radius:10px;font-size:13.5px;line-height:1.55;color:var(--ink-soft);}
+  .btn-ghost{padding:11px 20px;border-radius:10px;border:1px solid var(--border-hi);background:transparent;color:var(--ink-soft);font-weight:600;font-size:14px;transition:all .18s ease;}
+  .btn-ghost:hover{color:var(--ink);border-color:var(--ink-soft);}
+  .btn-next{padding:11px 24px;border-radius:10px;border:none;background:linear-gradient(135deg,var(--gold),#f0c766);color:#1a1506;font-weight:700;font-size:14px;transition:all .18s ease;}
+  .btn-next:hover:not(:disabled){transform:translateY(-1px);}
+  .btn-next:disabled{opacity:.35;cursor:default;}
+  .explain{margin-top:16px;padding:14px 16px;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:12px;font-size:13.5px;line-height:1.6;color:var(--ink-soft);}
 
   /* ---------- RESULT ---------- */
-  .result-wrap{max-width:640px;margin:0 auto;padding:56px 0 90px;text-align:center;}
-  .result-score{font-family:'IBM Plex Mono',monospace;font-size:64px;font-weight:600;color:var(--navy);margin:18px 0 6px;}
-  .result-wrap .eyebrow{justify-content:center;display:block;}
+  .result-wrap{max-width:640px;margin:0 auto;padding:60px 0 90px;text-align:center;}
+  .result-score{font-family:'IBM Plex Mono',monospace;font-size:64px;font-weight:600;color:var(--gold);margin:18px 0 6px;}
+  .result-wrap .eyebrow{justify-content:center;display:block;text-align:center;}
+  .result-wrap p{color:var(--ink-soft);}
   .result-breakdown{display:flex;justify-content:center;gap:26px;margin:34px 0;flex-wrap:wrap;}
-  .rb-item{background:#fff;border:1px solid var(--line);border-radius:14px;padding:18px 22px;min-width:150px;}
+  .rb-item{padding:18px 22px;min-width:150px;}
   .rb-item .val{font-family:'IBM Plex Mono',monospace;font-size:24px;font-weight:600;color:var(--teal);}
-  .rb-item .lbl{font-size:12px;color:var(--ink-soft);margin-top:4px;}
+  .rb-item .lbl{font-size:12px;color:var(--ink-dim);margin-top:4px;}
 
-  footer{border-top:1px solid var(--line);padding:26px 40px;text-align:center;font-size:12.5px;color:var(--ink-soft);}
-  footer b{color:var(--ink);}
+  footer{border-top:1px solid var(--border);padding:26px 40px;text-align:center;font-size:12.5px;color:var(--ink-dim);}
+  footer b{color:var(--ink-soft);}
 
   @media(max-width:820px){
     .hero{grid-template-columns:1fr;padding-top:44px;}
@@ -195,7 +249,6 @@
     nav{padding:16px 20px;}
     main{padding:0 20px;}
   }
-  @media (prefers-reduced-motion: reduce){*{transition:none !important;}}
 </style>
 </head>
 <body>
@@ -228,20 +281,20 @@
           <div><div class="num">∞</div><div class="lbl">Số lần làm lại</div></div>
         </div>
       </div>
-      <div class="compass-card">
+      <div class="compass-card glass">
         <h3>La bàn năng lực</h3>
         <div class="compass-title">Xem bạn đang đứng ở đâu</div>
         <div id="landingCompass"></div>
         <div class="compass-legend">
-          <div class="row"><span>Sử dụng ngôn ngữ</span><b>—</b></div>
-          <div class="row"><span>Toán học &amp; Tư duy logic</span><b>—</b></div>
-          <div class="row"><span>Giải quyết vấn đề</span><b>—</b></div>
+          <div class="row"><span><span class="dot" style="background:var(--gold)"></span>Sử dụng ngôn ngữ</span><b>—</b></div>
+          <div class="row"><span><span class="dot" style="background:var(--gold)"></span>Toán học &amp; Tư duy logic</span><b>—</b></div>
+          <div class="row"><span><span class="dot" style="background:var(--gold)"></span>Giải quyết vấn đề</span><b>—</b></div>
         </div>
       </div>
     </div>
 
     <div class="auth-wrap">
-      <div class="auth-card">
+      <div class="auth-card glass">
         <div class="auth-tabs">
           <button class="auth-tab active" id="tabLogin" onclick="switchAuthTab('login')">Đăng nhập</button>
           <button class="auth-tab" id="tabSignup" onclick="switchAuthTab('signup')">Đăng ký</button>
@@ -270,11 +323,11 @@
   <section id="view-dashboard" class="hidden">
     <div class="dash-head">
       <span class="eyebrow">Bảng điều khiển</span>
-      <h2 id="dashGreeting" style="font-size:30px;">Chào bạn</h2>
+      <h2 id="dashGreeting">Chào bạn</h2>
     </div>
 
     <div class="compass-section">
-      <div class="compass-card" style="border-radius:20px;">
+      <div class="compass-card glass" style="border-radius:var(--radius);">
         <h3>Điểm trung bình theo nhóm</h3>
         <div class="compass-title">La bàn năng lực của bạn</div>
         <div id="dashCompass"></div>
@@ -313,7 +366,7 @@
     <div class="result-wrap">
       <span class="eyebrow">Kết quả</span>
       <div class="result-score" id="resultScore">0/5</div>
-      <p id="resultNote" style="color:var(--ink-soft);"></p>
+      <p id="resultNote"></p>
       <div class="result-breakdown" id="resultBreakdown"></div>
       <button class="btn-next" onclick="backToDashboard()">Về bảng điều khiển</button>
     </div>
@@ -329,10 +382,12 @@
 /* =========================================================================
    1. CẤU HÌNH SUPABASE — điền thông tin dự án của bạn vào đây
    ========================================================================= */
-const SUPABASE_URL = "https://qaxapxiiyxzhhuyjlxxy.supabase.co";
-const SUPABASE_ANON_KEY = "sb_publishable_XIPWiwyP5a6X4UibCKSq5A_yrof0z0g";
+const SUPABASE_URL = "sb_publishable_XIPWiwyP5a6X4UibCKSq5A_yrof0z0g";
+const SUPABASE_ANON_KEY = "https://qaxapxiiyxzhhuyjlxxy.supabase.co";
 
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+// LƯU Ý: thư viện CDN gắn sẵn biến toàn cục "supabase" vào window,
+// nên client của chúng ta phải đặt tên khác (sb) để tránh trùng tên.
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 /* =========================================================================
    2. NGÂN HÀNG CÂU HỎI MẪU (demo) — 3 nhóm x 5 câu
@@ -398,14 +453,13 @@ async function handleSignup(){
   if(!name || !email || pass.length < 6){
     setAuthMsg('Điền đầy đủ họ tên, email và mật khẩu ≥ 6 ký tự.', false); return;
   }
-  const { data, error } = await supabase.auth.signUp({
+  const { data, error } = await sb.auth.signUp({
     email, password: pass,
     options: { data: { full_name: name } }
   });
   if(error){ setAuthMsg(error.message, false); return; }
-  // create profile row (id must match auth.users id)
   if(data.user){
-    await supabase.from('profiles').upsert({ id: data.user.id, full_name: name, school: 'UIT' });
+    await sb.from('profiles').upsert({ id: data.user.id, full_name: name, school: 'UIT' });
   }
   setAuthMsg('Tạo tài khoản thành công! Kiểm tra email để xác nhận (nếu bật), sau đó đăng nhập.', true);
   switchAuthTab('login');
@@ -415,13 +469,13 @@ async function handleLogin(){
   const email = document.getElementById('loginEmail').value.trim();
   const pass = document.getElementById('loginPass').value;
   if(!email || !pass){ setAuthMsg('Nhập email và mật khẩu.', false); return; }
-  const { data, error } = await supabase.auth.signInWithPassword({ email, password: pass });
+  const { data, error } = await sb.auth.signInWithPassword({ email, password: pass });
   if(error){ setAuthMsg(error.message, false); return; }
   setAuthMsg('Đăng nhập thành công.', true);
 }
 
 async function handleLogout(){
-  await supabase.auth.signOut();
+  await sb.auth.signOut();
 }
 
 /* =========================================================================
@@ -429,7 +483,14 @@ async function handleLogout(){
    ========================================================================= */
 function showView(name){
   ['landing','dashboard','quiz','result'].forEach(v=>{
-    document.getElementById('view-'+v).classList.toggle('hidden', v!==name);
+    const el = document.getElementById('view-'+v);
+    const active = v===name;
+    el.classList.toggle('hidden', !active);
+    if(active){
+      el.classList.remove('view-enter');
+      void el.offsetWidth; // restart animation
+      el.classList.add('view-enter');
+    }
   });
 }
 
@@ -449,10 +510,9 @@ function escapeHtml(s){
 }
 
 /* =========================================================================
-   6. COMPASS (radar chart, signature element)
+   6. COMPASS (radar chart, signature element — glows + animates in)
    ========================================================================= */
 function renderCompass(containerId, scores){
-  // scores: {ngonngu, toanlogic, giaiquyetvandề} each 0-100 or null
   const size = 220, cx = size/2, cy = size/2, r = 82;
   const axes = CATEGORIES.map(c => scores[c.key] ?? 0);
   const angleFor = i => (-Math.PI/2) + i * (2*Math.PI/3);
@@ -465,23 +525,26 @@ function renderCompass(containerId, scores){
     const a = angleFor(i); return `${cx + r*frac*Math.cos(a)},${cy + r*frac*Math.sin(a)}`;
   }).join(' ');
   const dataPts = CATEGORIES.map((_,i)=> pt(i, axes[i]).join(',')).join(' ');
-  const labelPts = CATEGORIES.map((_,i)=>{
-    const a = angleFor(i);
-    return [cx + (r+26)*Math.cos(a), cy + (r+26)*Math.sin(a)];
-  });
 
-  let svg = `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">`;
+  let svg = `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">
+    <defs>
+      <radialGradient id="glow-${containerId}" cx="50%" cy="50%" r="60%">
+        <stop offset="0%" stop-color="#E7B84F" stop-opacity="0.5"/>
+        <stop offset="100%" stop-color="#E7B84F" stop-opacity="0"/>
+      </radialGradient>
+    </defs>`;
   [0.33,0.66,1].forEach(f=>{
-    svg += `<polygon points="${gridPts(f)}" fill="none" stroke="rgba(246,243,236,0.18)" stroke-width="1"/>`;
+    svg += `<polygon points="${gridPts(f)}" fill="none" stroke="rgba(255,255,255,0.09)" stroke-width="1"/>`;
   });
   CATEGORIES.forEach((_,i)=>{
     const [x,y] = pt(i,100);
-    svg += `<line x1="${cx}" y1="${cy}" x2="${x}" y2="${y}" stroke="rgba(246,243,236,0.18)"/>`;
+    svg += `<line x1="${cx}" y1="${cy}" x2="${x}" y2="${y}" stroke="rgba(255,255,255,0.09)"/>`;
   });
-  svg += `<polygon points="${dataPts}" fill="rgba(201,162,75,0.35)" stroke="#C9A24B" stroke-width="2"/>`;
+  svg += `<circle cx="${cx}" cy="${cy}" r="70" fill="url(#glow-${containerId})"/>`;
+  svg += `<polygon points="${dataPts}" fill="rgba(231,184,79,0.28)" stroke="#E7B84F" stroke-width="2.5" style="transition:all .8s cubic-bezier(.2,.7,.3,1);"/>`;
   CATEGORIES.forEach((_,i)=>{
     const [x,y] = pt(i,axes[i]);
-    svg += `<circle cx="${x}" cy="${y}" r="4" fill="#C9A24B"/>`;
+    svg += `<circle cx="${x}" cy="${y}" r="4.5" fill="#E7B84F" stroke="#0A0E1A" stroke-width="1.5"/>`;
   });
   svg += `</svg>`;
   document.getElementById(containerId).innerHTML = svg;
@@ -494,8 +557,7 @@ async function loadDashboard(){
   const name = currentUser.user_metadata?.full_name || currentUser.email;
   document.getElementById('dashGreeting').textContent = `Chào ${name.split(' ').pop()}, sẵn sàng luyện chưa?`;
 
-  // fetch results
-  const { data, error } = await supabase
+  const { data, error } = await sb
     .from('quiz_results')
     .select('*')
     .eq('user_id', currentUser.id)
@@ -517,7 +579,6 @@ async function loadDashboard(){
 
   renderCompass('dashCompass', latestScores);
 
-  // history list
   const histEl = document.getElementById('historyList');
   if(!data || data.length===0){
     histEl.innerHTML = '<p class="empty-note">Chưa có lượt luyện nào. Bắt đầu bên dưới nhé.</p>';
@@ -533,11 +594,10 @@ async function loadDashboard(){
     }).join('');
   }
 
-  // category cards
   document.getElementById('catGrid').innerHTML = CATEGORIES.map(c=>{
     const score = latestScores[c.key];
     const pct = score ?? 0;
-    return `<div class="cat-card">
+    return `<div class="cat-card glass">
       <span class="tag">${QUESTION_BANK[c.key].length} câu mẫu</span>
       <h3>${c.label}</h3>
       <p>${c.desc}</p>
@@ -588,6 +648,7 @@ function selectOption(i){
   const q = currentQuiz.questions[currentQuiz.index];
   const buttons = document.querySelectorAll('#quizOptions .opt');
   buttons.forEach((b,idx)=>{
+    b.disabled = true;
     b.classList.remove('selected');
     if(idx === q.correct) b.classList.add('correct');
     if(idx === i && i !== q.correct) b.classList.add('wrong');
@@ -622,12 +683,12 @@ async function finishQuiz(){
   document.getElementById('resultScore').textContent = `${score}/${total}`;
   document.getElementById('resultNote').textContent = `Nhóm: ${cat.label}`;
   document.getElementById('resultBreakdown').innerHTML = `
-    <div class="rb-item"><div class="val">${Math.round((score/total)*100)}%</div><div class="lbl">Độ chính xác</div></div>
-    <div class="rb-item"><div class="val">${total}</div><div class="lbl">Câu đã làm</div></div>
+    <div class="rb-item glass"><div class="val">${Math.round((score/total)*100)}%</div><div class="lbl">Độ chính xác</div></div>
+    <div class="rb-item glass"><div class="val">${total}</div><div class="lbl">Câu đã làm</div></div>
   `;
 
   if(currentUser){
-    await supabase.from('quiz_results').insert({
+    await sb.from('quiz_results').insert({
       user_id: currentUser.id,
       category: catKey,
       score, total,
@@ -644,7 +705,7 @@ function backToDashboard(){
 /* =========================================================================
    9. AUTH STATE LISTENER — điều hướng toàn app
    ========================================================================= */
-supabase.auth.onAuthStateChange(async (event, session) => {
+sb.auth.onAuthStateChange(async (event, session) => {
   currentUser = session?.user || null;
   await renderNav();
   if(currentUser){
@@ -656,7 +717,7 @@ supabase.auth.onAuthStateChange(async (event, session) => {
 });
 
 (async function init(){
-  const { data:{ session } } = await supabase.auth.getSession();
+  const { data:{ session } } = await sb.auth.getSession();
   currentUser = session?.user || null;
   await renderNav();
   if(currentUser){
