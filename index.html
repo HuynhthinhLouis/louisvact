@@ -87,6 +87,13 @@
   }
   .pill.solid:hover{transform:translateY(-1px); box-shadow:0 12px 26px -10px rgba(231,184,79,0.7);}
   .who{font-size:13px;color:var(--ink-soft);}
+  .balance-pill{
+    display:flex;align-items:center;gap:7px;
+    padding:8px 14px;border-radius:999px;
+    background:rgba(231,184,79,0.10);border:1px solid var(--gold-dim);
+    font-family:'IBM Plex Mono',monospace;font-size:13px;font-weight:600;color:var(--gold);
+  }
+  .balance-pill .ic{font-size:13px;}
 
   main{max-width:1100px;margin:0 auto;padding:0 40px;}
 
@@ -239,6 +246,62 @@
   .rb-item .val{font-family:'IBM Plex Mono',monospace;font-size:24px;font-weight:600;color:var(--teal);}
   .rb-item .lbl{font-size:12px;color:var(--ink-dim);margin-top:4px;}
 
+  /* ---------- ADMIN DASHBOARD ---------- */
+  .admin-wrap{padding:44px 0 90px;}
+  .admin-summary{display:flex;gap:18px;margin:26px 0 34px;flex-wrap:wrap;}
+  .admin-stat{padding:18px 22px;min-width:150px;}
+  .admin-stat .val{font-family:'IBM Plex Mono',monospace;font-size:22px;font-weight:600;color:var(--ink);}
+  .admin-stat .lbl{font-size:11.5px;color:var(--ink-dim);margin-top:4px;}
+  .admin-panel{padding:26px;margin-bottom:28px;}
+  .admin-panel h3{font-size:16px;color:var(--ink);margin-bottom:16px;}
+  .admin-add-grid{display:grid;grid-template-columns:1fr 1fr 1fr 1fr auto;gap:12px;align-items:end;}
+  .admin-add-grid .field{margin-bottom:0;}
+  .admin-add-grid input{width:100%;}
+  .btn-add{
+    padding:11px 20px;border-radius:10px;border:none;white-space:nowrap;
+    background:linear-gradient(135deg,var(--teal),#63e0bd);color:#062820;font-weight:700;font-size:13.5px;
+    transition:transform .15s ease;
+  }
+  .btn-add:hover{transform:translateY(-1px);}
+  .admin-msg{font-size:13px;margin-top:12px;min-height:18px;}
+  .admin-msg.err{color:var(--coral);}
+  .admin-msg.ok{color:var(--teal);}
+  .admin-table-wrap{overflow-x:auto;}
+  table.admin-table{width:100%;border-collapse:collapse;font-size:13.5px;}
+  table.admin-table th{
+    text-align:left;padding:10px 12px;color:var(--ink-dim);font-size:11px;
+    text-transform:uppercase;letter-spacing:.08em;font-weight:600;border-bottom:1px solid var(--border-hi);
+    white-space:nowrap;
+  }
+  table.admin-table td{padding:12px;border-bottom:1px solid var(--border);vertical-align:middle;color:var(--ink);white-space:nowrap;}
+  table.admin-table tr:last-child td{border-bottom:none;}
+  .admin-name{font-weight:600;}
+  .admin-email{color:var(--ink-dim);font-size:12.5px;}
+  .bal-input{
+    width:130px;padding:8px 10px;border:1px solid var(--border);border-radius:8px;
+    font-family:'IBM Plex Mono',monospace;font-size:13px;background:rgba(255,255,255,0.03);color:var(--ink);
+  }
+  .bal-input:focus{outline:none;border-color:var(--teal);}
+  .row-actions{display:flex;gap:8px;flex-wrap:nowrap;}
+  .btn-mini{
+    padding:7px 12px;border-radius:8px;border:1px solid var(--border-hi);background:rgba(255,255,255,0.04);
+    color:var(--ink);font-size:12px;font-weight:600;transition:all .15s ease;
+  }
+  .btn-mini:hover{background:var(--surface-hi);}
+  .btn-mini.save{border-color:var(--teal-dim);color:var(--teal);}
+  .btn-mini.grant{border-color:var(--gold-dim);color:var(--gold);}
+  .btn-mini.revoke{color:var(--ink-soft);}
+  .btn-mini.danger{border-color:rgba(231,111,95,0.4);color:var(--coral);}
+  .admin-badge{
+    display:inline-block;padding:3px 9px;border-radius:999px;font-size:10.5px;font-weight:700;
+    text-transform:uppercase;letter-spacing:.06em;background:rgba(231,184,79,0.15);color:var(--gold);
+    border:1px solid var(--gold-dim);
+  }
+  .user-badge{
+    display:inline-block;padding:3px 9px;border-radius:999px;font-size:10.5px;font-weight:600;
+    color:var(--ink-dim);border:1px solid var(--border);
+  }
+
   footer{border-top:1px solid var(--border);padding:26px 40px;text-align:center;font-size:12.5px;color:var(--ink-dim);}
   footer b{color:var(--ink-soft);}
 
@@ -248,6 +311,7 @@
     .compass-section{grid-template-columns:1fr;}
     nav{padding:16px 20px;}
     main{padding:0 20px;}
+    .admin-add-grid{grid-template-columns:1fr 1fr;}
   }
 </style>
 </head>
@@ -324,6 +388,7 @@
     <div class="dash-head">
       <span class="eyebrow">Bảng điều khiển</span>
       <h2 id="dashGreeting">Chào bạn</h2>
+      <div class="balance-pill" style="margin-top:14px;width:fit-content;"><span class="ic">💰</span><span id="dashBalance">0đ</span> — Số dư khả dụng</div>
     </div>
 
     <div class="compass-section">
@@ -372,6 +437,47 @@
     </div>
   </section>
 
+  <!-- ===================== ADMIN DASHBOARD ===================== -->
+  <section id="view-admin" class="hidden">
+    <div class="admin-wrap">
+      <span class="eyebrow">Chỉ dành cho quản trị viên</span>
+      <h2 style="font-size:28px;">Bảng quản trị tài khoản</h2>
+
+      <div class="admin-summary" id="adminSummary"></div>
+
+      <div class="admin-panel glass">
+        <h3>Thêm tài khoản mới</h3>
+        <div class="admin-add-grid">
+          <div class="field"><label>Họ và tên</label><input type="text" id="admNewName" placeholder="Nguyễn Văn A"></div>
+          <div class="field"><label>Email</label><input type="email" id="admNewEmail" placeholder="ban@email.com"></div>
+          <div class="field"><label>Mật khẩu</label><input type="password" id="admNewPass" placeholder="≥ 6 ký tự"></div>
+          <div class="field"><label>Số dư ban đầu (đ)</label><input type="number" id="admNewBalance" placeholder="0" value="0"></div>
+          <button class="btn-add" onclick="adminAddAccount()">+ Tạo tài khoản</button>
+        </div>
+        <div id="adminAddMsg" class="admin-msg"></div>
+      </div>
+
+      <div class="admin-panel glass">
+        <h3>Danh sách tài khoản</h3>
+        <div class="admin-table-wrap">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>Họ và tên</th>
+                <th>Quyền</th>
+                <th>Số dư (đ)</th>
+                <th>Lượt luyện</th>
+                <th>Hành động</th>
+              </tr>
+            </thead>
+            <tbody id="adminAccountsBody"></tbody>
+          </table>
+        </div>
+        <div id="adminTableMsg" class="admin-msg"></div>
+      </div>
+    </div>
+  </section>
+
 </main>
 
 <footer>
@@ -388,6 +494,12 @@ const SUPABASE_ANON_KEY = "sb_publishable_XIPWiwyP5a6X4UibCKSq5A_yrof0z0g";
 // LƯU Ý: thư viện CDN gắn sẵn biến toàn cục "supabase" vào window,
 // nên client của chúng ta phải đặt tên khác (sb) để tránh trùng tên.
 const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+// Client phụ, KHÔNG lưu phiên đăng nhập — dùng riêng khi admin tạo tài khoản mới,
+// để tránh việc sb.auth.signUp() ghi đè phiên đăng nhập hiện tại của admin.
+const sbAdmin = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+  auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false }
+});
 
 /* =========================================================================
    2. NGÂN HÀNG CÂU HỎI MẪU (demo) — 3 nhóm x 5 câu
@@ -426,8 +538,13 @@ const QUESTION_BANK = {
    3. STATE
    ========================================================================= */
 let currentUser = null;
+let currentProfile = null; // { id, full_name, school, email, balance, is_admin }
 let currentQuiz = null; // { catKey, questions:[], index:0, answers:[], selectedIdx:null, locked:false }
 let latestScores = { ngonngu:null, toanlogic:null, giaiquyetvandề:null };
+
+function formatVND(n){
+  return (Number(n)||0).toLocaleString('vi-VN') + 'đ';
+}
 
 /* =========================================================================
    4. AUTH
@@ -459,7 +576,7 @@ async function handleSignup(){
   });
   if(error){ setAuthMsg(error.message, false); return; }
   if(data.user){
-    await sb.from('profiles').upsert({ id: data.user.id, full_name: name, school: 'UIT' });
+    await sb.from('profiles').upsert({ id: data.user.id, full_name: name, school: 'UIT', email, balance: 0, is_admin: false });
   }
   setAuthMsg('Tạo tài khoản thành công! Kiểm tra email để xác nhận (nếu bật), sau đó đăng nhập.', true);
   switchAuthTab('login');
@@ -481,8 +598,30 @@ async function handleLogout(){
 /* =========================================================================
    5. VIEW ROUTING
    ========================================================================= */
+async function fetchProfile(){
+  if(!currentUser){ currentProfile = null; return; }
+  const { data, error } = await sb.from('profiles').select('*').eq('id', currentUser.id).single();
+  if(!error && data){
+    currentProfile = data;
+  } else {
+    const fallback = {
+      id: currentUser.id,
+      full_name: currentUser.user_metadata?.full_name || currentUser.email,
+      school: 'UIT', email: currentUser.email, balance: 0, is_admin: false
+    };
+    await sb.from('profiles').upsert(fallback);
+    currentProfile = fallback;
+  }
+}
+
+function openAdmin(){
+  if(!currentProfile?.is_admin) return;
+  showView('admin');
+  loadAdminDashboard();
+}
+
 function showView(name){
-  ['landing','dashboard','quiz','result'].forEach(v=>{
+  ['landing','dashboard','quiz','result','admin'].forEach(v=>{
     const el = document.getElementById('view-'+v);
     const active = v===name;
     el.classList.toggle('hidden', !active);
@@ -498,7 +637,12 @@ async function renderNav(){
   const wrap = document.getElementById('navActions');
   if(currentUser){
     const name = currentUser.user_metadata?.full_name || currentUser.email;
-    wrap.innerHTML = `<span class="who">Xin chào, ${escapeHtml(name)}</span>
+    const adminBtn = currentProfile?.is_admin
+      ? `<button class="pill" onclick="openAdmin()">Quản trị</button>` : '';
+    wrap.innerHTML = `
+      <div class="balance-pill" title="Số dư tài khoản"><span class="ic">💰</span>${formatVND(currentProfile?.balance)}</div>
+      <span class="who">Xin chào, ${escapeHtml(name)}</span>
+      ${adminBtn}
       <button class="pill" onclick="handleLogout()">Đăng xuất</button>`;
   } else {
     wrap.innerHTML = `<a class="pill" href="#" onclick="return false;">Chưa đăng nhập</a>`;
@@ -556,6 +700,7 @@ function renderCompass(containerId, scores){
 async function loadDashboard(){
   const name = currentUser.user_metadata?.full_name || currentUser.email;
   document.getElementById('dashGreeting').textContent = `Chào ${name.split(' ').pop()}, sẵn sàng luyện chưa?`;
+  document.getElementById('dashBalance').textContent = formatVND(currentProfile?.balance);
 
   const { data, error } = await sb
     .from('quiz_results')
@@ -703,10 +848,144 @@ function backToDashboard(){
 }
 
 /* =========================================================================
-   9. AUTH STATE LISTENER — điều hướng toàn app
+   9. ADMIN DASHBOARD
+   ========================================================================= */
+function setAdminTableMsg(text, ok){
+  const el = document.getElementById('adminTableMsg');
+  el.textContent = text;
+  el.className = 'admin-msg ' + (ok ? 'ok' : 'err');
+}
+
+async function loadAdminDashboard(){
+  if(!currentProfile?.is_admin){ showView('dashboard'); return; }
+
+  const [{ data: profiles, error }, { data: results }] = await Promise.all([
+    sb.from('profiles').select('*').order('full_name', { ascending: true }),
+    sb.from('quiz_results').select('user_id')
+  ]);
+
+  if(error){
+    setAdminTableMsg('Không tải được danh sách tài khoản: ' + error.message, false);
+    return;
+  }
+
+  const countByUser = {};
+  (results||[]).forEach(r=>{ countByUser[r.user_id] = (countByUser[r.user_id]||0) + 1; });
+
+  const totalBalance = (profiles||[]).reduce((s,p)=> s + (Number(p.balance)||0), 0);
+  const adminCount = (profiles||[]).filter(p=>p.is_admin).length;
+  document.getElementById('adminSummary').innerHTML = `
+    <div class="admin-stat glass"><div class="val">${profiles.length}</div><div class="lbl">Tổng số tài khoản</div></div>
+    <div class="admin-stat glass"><div class="val">${adminCount}</div><div class="lbl">Quản trị viên</div></div>
+    <div class="admin-stat glass"><div class="val">${formatVND(totalBalance)}</div><div class="lbl">Tổng số dư toàn hệ thống</div></div>
+  `;
+
+  document.getElementById('adminAccountsBody').innerHTML = (profiles||[]).map(p=>{
+    const isSelf = p.id === currentUser.id;
+    return `<tr>
+      <td>
+        <div class="admin-name">${escapeHtml(p.full_name || '(chưa đặt tên)')}</div>
+        <div class="admin-email">${escapeHtml(p.email || p.id)}</div>
+      </td>
+      <td>${p.is_admin ? '<span class="admin-badge">Admin</span>' : '<span class="user-badge">Thành viên</span>'}</td>
+      <td><input class="bal-input" type="number" step="1000" id="bal-${p.id}" value="${Number(p.balance)||0}"></td>
+      <td>${countByUser[p.id]||0}</td>
+      <td>
+        <div class="row-actions">
+          <button class="btn-mini save" onclick="adminUpdateBalance('${p.id}')">Lưu số dư</button>
+          ${p.is_admin
+            ? `<button class="btn-mini revoke" onclick="adminSetRole('${p.id}', false)" ${isSelf?'disabled title="Không thể tự bỏ quyền của chính mình"':''}>Bỏ quyền admin</button>`
+            : `<button class="btn-mini grant" onclick="adminSetRole('${p.id}', true)">Gán quyền admin</button>`}
+          <button class="btn-mini danger" onclick="adminDeleteAccount('${p.id}')" ${isSelf?'disabled title="Không thể tự xoá chính mình"':''}>Xoá</button>
+        </div>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+async function adminAddAccount(){
+  const name = document.getElementById('admNewName').value.trim();
+  const email = document.getElementById('admNewEmail').value.trim();
+  const pass = document.getElementById('admNewPass').value;
+  const balance = Number(document.getElementById('admNewBalance').value) || 0;
+  const msgEl = document.getElementById('adminAddMsg');
+
+  if(!name || !email || pass.length < 6){
+    msgEl.textContent = 'Điền đầy đủ họ tên, email và mật khẩu ≥ 6 ký tự.';
+    msgEl.className = 'admin-msg err';
+    return;
+  }
+
+  // Dùng sbAdmin (không lưu phiên) để không ghi đè phiên đăng nhập của admin hiện tại.
+  const { data, error } = await sbAdmin.auth.signUp({
+    email, password: pass,
+    options: { data: { full_name: name } }
+  });
+
+  if(error){ msgEl.textContent = error.message; msgEl.className = 'admin-msg err'; return; }
+
+  if(data.user){
+    await sb.from('profiles').upsert({
+      id: data.user.id, full_name: name, school: 'UIT', email, balance, is_admin: false
+    });
+  }
+
+  msgEl.textContent = 'Đã tạo tài khoản mới thành công.';
+  msgEl.className = 'admin-msg ok';
+  document.getElementById('admNewName').value = '';
+  document.getElementById('admNewEmail').value = '';
+  document.getElementById('admNewPass').value = '';
+  document.getElementById('admNewBalance').value = '0';
+  loadAdminDashboard();
+}
+
+async function adminUpdateBalance(userId){
+  const input = document.getElementById('bal-' + userId);
+  const newBal = Number(input.value);
+  if(isNaN(newBal) || newBal < 0){
+    setAdminTableMsg('Số dư không hợp lệ.', false); return;
+  }
+  const { error } = await sb.from('profiles').update({ balance: newBal }).eq('id', userId);
+  if(error){ setAdminTableMsg('Lỗi cập nhật số dư: ' + error.message, false); return; }
+
+  setAdminTableMsg('Đã cập nhật số dư.', true);
+  if(userId === currentUser.id){
+    currentProfile.balance = newBal;
+    await renderNav();
+  }
+  loadAdminDashboard();
+}
+
+async function adminSetRole(userId, makeAdmin){
+  if(userId === currentUser.id && !makeAdmin){
+    setAdminTableMsg('Bạn không thể tự bỏ quyền admin của chính mình.', false); return;
+  }
+  const { error } = await sb.from('profiles').update({ is_admin: makeAdmin }).eq('id', userId);
+  if(error){ setAdminTableMsg('Lỗi cập nhật quyền: ' + error.message, false); return; }
+
+  setAdminTableMsg(makeAdmin ? 'Đã gán quyền admin.' : 'Đã bỏ quyền admin.', true);
+  loadAdminDashboard();
+}
+
+async function adminDeleteAccount(userId){
+  if(userId === currentUser.id){
+    setAdminTableMsg('Bạn không thể tự xoá tài khoản đang đăng nhập.', false); return;
+  }
+  if(!confirm('Xoá hồ sơ tài khoản này? Thao tác này xoá dữ liệu hồ sơ (số dư, lịch sử liên kết) và không thể hoàn tác.')) return;
+
+  const { error } = await sb.from('profiles').delete().eq('id', userId);
+  if(error){ setAdminTableMsg('Lỗi khi xoá: ' + error.message, false); return; }
+
+  setAdminTableMsg('Đã xoá hồ sơ tài khoản.', true);
+  loadAdminDashboard();
+}
+
+/* =========================================================================
+   10. AUTH STATE LISTENER — điều hướng toàn app
    ========================================================================= */
 sb.auth.onAuthStateChange(async (event, session) => {
   currentUser = session?.user || null;
+  await fetchProfile();
   await renderNav();
   if(currentUser){
     loadDashboard();
@@ -719,6 +998,7 @@ sb.auth.onAuthStateChange(async (event, session) => {
 (async function init(){
   const { data:{ session } } = await sb.auth.getSession();
   currentUser = session?.user || null;
+  await fetchProfile();
   await renderNav();
   if(currentUser){
     loadDashboard();
