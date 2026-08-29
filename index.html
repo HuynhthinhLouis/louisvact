@@ -1487,7 +1487,18 @@ async function toggleCourseAnswers(courseId){
    10. AUTH STATE LISTENER — điều hướng toàn app
    ========================================================================= */
 sb.auth.onAuthStateChange(async (event, session) => {
+  // Supabase tự bắn lại sự kiện này (TOKEN_REFRESHED, INITIAL_SESSION...) mỗi khi
+  // tab được focus lại. Nếu không lọc, cứ mỗi lần chuyển tab qua rồi quay lại là
+  // app sẽ tự loadDashboard()/showView('landing') và đá người dùng khỏi trang
+  // họ đang xem (quiz, kết quả, khoá học...). Chỉ điều hướng khi có đăng nhập/
+  // đăng xuất thật sự.
+  const isRealNav = (event === 'SIGNED_IN' || event === 'SIGNED_OUT');
   currentUser = session?.user || null;
+
+  if(!isRealNav){
+    return; // TOKEN_REFRESHED, USER_UPDATED, v.v. -> không điều hướng lại
+  }
+
   await fetchProfile();
   await renderNav();
   if(currentUser){
