@@ -405,6 +405,94 @@
     main{padding:0 20px;}
     .admin-add-grid{grid-template-columns:1fr 1fr;}
   }
+
+  /* =========================================================================
+     MODERN POLISH — texture, chuyển động tinh tế, trạng thái tương tác rõ ràng
+     ========================================================================= */
+
+  /* Lớp noise tinh tế phía sau, tạo cảm giác chất liệu thay vì phẳng tuyệt đối */
+  body{
+    background:
+      radial-gradient(1100px 600px at 12% -10%, rgba(73,203,166,0.10), transparent 60%),
+      radial-gradient(900px 700px at 100% 0%, rgba(231,184,79,0.09), transparent 55%),
+      radial-gradient(1200px 900px at 50% 120%, rgba(90,110,220,0.08), transparent 60%),
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 220 220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E"),
+      var(--bg);
+  }
+
+  /* Thanh cuộn theo chủ đề, thay vì thanh cuộn mặc định của trình duyệt */
+  *{ scrollbar-width:thin; scrollbar-color:rgba(255,255,255,0.16) transparent; }
+  ::-webkit-scrollbar{width:10px;height:10px;}
+  ::-webkit-scrollbar-track{background:transparent;}
+  ::-webkit-scrollbar-thumb{background-color:rgba(255,255,255,0.14);border-radius:999px;border:2px solid var(--bg-2);background-clip:padding-box;}
+  ::-webkit-scrollbar-thumb:hover{background-color:rgba(255,255,255,0.24);}
+
+  /* Trạng thái focus rõ ràng cho bàn phím, nhất quán trên mọi phần tử tương tác */
+  a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, .pill:focus-visible{
+    outline:2px solid var(--teal); outline-offset:2px; border-radius:6px;
+  }
+
+  /* Nav: đổ bóng nhẹ khi cuộn trang, tạo cảm giác chiều sâu thay vì viền tĩnh */
+  nav{ transition: box-shadow .3s ease, border-color .3s ease, background .3s ease; }
+  nav.is-scrolled{
+    box-shadow:0 18px 40px -24px rgba(0,0,0,0.7);
+    border-bottom-color:var(--border-hi);
+    background:rgba(10,14,26,0.88);
+  }
+
+  /* Micro-interaction chung cho mọi nút bấm: easing mượt + phản hồi khi nhấn */
+  button, .pill, .btn-add, .btn-buy, .btn-mini, .btn-cancel-edit, .btn-primary, .auth-tab, .opt, .pdf-tab{
+    transition: transform .16s cubic-bezier(.2,.8,.2,1), box-shadow .18s ease, filter .18s ease, background .18s ease, border-color .18s ease, color .18s ease;
+  }
+  button:active:not(:disabled), .pill:active, .btn-mini:active{ transform:translateY(0) scale(.96); }
+  .btn-add:hover:not(:disabled){ filter:brightness(1.06); }
+  .btn-mini:hover{ transform:translateY(-1px); }
+
+  /* Card: nâng nhẹ + sáng viền khi hover, thống nhất trên mọi loại thẻ glass */
+  .glass{ transition: transform .28s cubic-bezier(.2,.8,.2,1), box-shadow .28s ease, border-color .28s ease; }
+  .course-browse-card:hover, .course-item:hover, .compass-card:hover{
+    transform:translateY(-3px);
+    box-shadow:0 26px 50px -28px rgba(0,0,0,0.6);
+    border-color:var(--border-hi);
+  }
+
+  /* Bảng admin: dòng nổi bật khi rê chuột, tiêu đề dính khi cuộn ngang dài */
+  table.admin-table tbody tr{ transition: background .15s ease; }
+  table.admin-table tbody tr:hover{ background:rgba(255,255,255,0.03); }
+
+  /* Thông báo trạng thái: dạng banner có thanh màu bên trái thay vì chữ trơn */
+  .admin-msg, .auth-msg{
+    transition: opacity .2s ease;
+  }
+  .admin-msg.ok, .admin-msg.err, .auth-msg.ok, .auth-msg.err{
+    padding:10px 14px; border-radius:10px; border-left:3px solid currentColor;
+    background:rgba(255,255,255,0.03); display:inline-block;
+  }
+
+  /* Input: bóng đổ vào trong nhẹ, tạo chiều sâu thay vì phẳng hoàn toàn */
+  .field input, .bal-input{
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.18);
+  }
+  .field input:focus{
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.18), 0 0 0 3px rgba(73,203,166,0.15);
+  }
+
+  /* Thanh tiến trình: chuyển động mượt khi điểm số thay đổi */
+  .bar span{ transition: width .6s cubic-bezier(.2,.8,.2,1); }
+
+  /* Xuất hiện tuần tự cho lưới thẻ khi vào trang, thay vì hiện cùng lúc cứng nhắc */
+  .dash-grid.view-enter .cat-card, .course-browse-grid .course-browse-card{
+    animation: fadeUp .5s cubic-bezier(.2,.7,.3,1) both;
+  }
+  .dash-grid .cat-card:nth-child(2){ animation-delay:.06s; }
+  .dash-grid .cat-card:nth-child(3){ animation-delay:.12s; }
+  .course-browse-grid .course-browse-card:nth-child(2){ animation-delay:.05s; }
+  .course-browse-grid .course-browse-card:nth-child(3){ animation-delay:.1s; }
+  .course-browse-grid .course-browse-card:nth-child(4){ animation-delay:.15s; }
+
+  @media (prefers-reduced-motion: reduce){
+    nav, button, .pill, .glass, .bar span, .cat-card, .course-browse-card{ animation:none !important; transition:none !important; }
+  }
 </style>
 </head>
 <body>
@@ -780,6 +868,12 @@ let examVisHandlerBound = false;
 function formatVND(n){
   return (Number(n)||0).toLocaleString('vi-VN') + 'đ';
 }
+
+// Đổ bóng cho thanh nav khi người dùng cuộn trang xuống, tạo cảm giác chiều sâu.
+window.addEventListener('scroll', ()=>{
+  const nav = document.querySelector('nav');
+  if(nav) nav.classList.toggle('is-scrolled', window.scrollY > 8);
+}, { passive:true });
 
 /* =========================================================================
    4. AUTH
