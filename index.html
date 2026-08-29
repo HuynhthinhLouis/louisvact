@@ -1486,19 +1486,17 @@ async function toggleCourseAnswers(courseId){
 /* =========================================================================
    10. AUTH STATE LISTENER — điều hướng toàn app
    ========================================================================= */
-sb.auth.onAuthStateChange(async (event, session) => {
-  // Supabase tự bắn lại sự kiện này (TOKEN_REFRESHED, INITIAL_SESSION...) mỗi khi
-  // tab được focus lại. Nếu không lọc, cứ mỗi lần chuyển tab qua rồi quay lại là
-  // app sẽ tự loadDashboard()/showView('landing') và đá người dùng khỏi trang
-  // họ đang xem (quiz, kết quả, khoá học...). Chỉ điều hướng khi có đăng nhập/
-  // đăng xuất thật sự.
-  const isRealNav = (event === 'SIGNED_IN' || event === 'SIGNED_OUT');
-  currentUser = session?.user || null;
+/* =========================================================================
+   10. AUTH STATE LISTENER — điều hướng toàn app
+   ========================================================================= */
+// Supabase-js có thể bắn lại sự kiện auth (kể cả SIGNED_IN, không chỉ
+// TOKEN_REFRESHED) mỗi khi tab được focus lại, dù vẫn là cùng một người dùng.
+// Vì vậy không thể dựa vào TÊN sự kiện để quyết định có điều hướng hay không —
+// phải so sánh xem NGƯỜI DÙNG có thực sự đổi (đăng nhập/đăng xuất) hay chưa.
+let lastNavUserId = 'chua-khoi-tao'; // sentinel, khác cả null lẫn mọi uuid thật
 
-  if(!isRealNav){
-    return; // TOKEN_REFRESHED, USER_UPDATED, v.v. -> không điều hướng lại
-  }
-
+async function handleAuthNav(user){
+  currentUser = user;
   await fetchProfile();
   await renderNav();
   if(currentUser){
@@ -1507,19 +1505,27 @@ sb.auth.onAuthStateChange(async (event, session) => {
     renderCompass('landingCompass', {});
     showView('landing');
   }
+  lastNavUserId = user?.id || null;
+}
+
+sb.auth.onAuthStateChange(async (event, session) => {
+  const newUser = session?.user || null;
+  const newId = newUser?.id || null;
+  currentUser = newUser; // vẫn luôn cập nhật session/token mới nhất
+
+  if(newId === lastNavUserId){
+    // Vẫn là cùng người dùng (hoặc vẫn đang ở trạng thái chưa đăng nhập) ->
+    // đây chỉ là làm mới token khi quay lại tab, KHÔNG điều hướng lại để
+    // tránh đá người dùng khỏi trang họ đang xem (quiz, kết quả, khoá học...).
+    return;
+  }
+
+  await handleAuthNav(newUser);
 });
 
 (async function init(){
   const { data:{ session } } = await sb.auth.getSession();
-  currentUser = session?.user || null;
-  await fetchProfile();
-  await renderNav();
-  if(currentUser){
-    loadDashboard();
-  } else {
-    renderCompass('landingCompass', {});
-    showView('landing');
-  }
+  await handleAuthNav(session?.user || null);
 })();
 </script>
 </body>
