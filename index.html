@@ -380,6 +380,20 @@
   .answer-key-view{margin-top:6px;display:grid;grid-template-columns:repeat(auto-fill,minmax(52px,1fr));gap:6px;font-family:'IBM Plex Mono',monospace;font-size:11.5px;}
   .answer-key-view .ak-cell{padding:5px 2px;text-align:center;border-radius:6px;background:rgba(255,255,255,0.05);border:1px solid var(--border);color:var(--ink-soft);}
 
+  /* ---------- SPLIT VIEW: file đề (trái) + đề/đáp án (phải) ---------- */
+  .split-view{display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start;margin-top:20px;}
+  @media (max-width:920px){.split-view{grid-template-columns:1fr;}}
+  .split-pane{min-width:0;}
+  .split-pane h4{font-size:14px;color:var(--ink);margin-bottom:10px;}
+  .pdf-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;}
+  .pdf-tab{padding:6px 12px;border-radius:999px;border:1px solid var(--border);background:transparent;color:var(--ink-soft);font-size:12px;font-weight:600;}
+  .pdf-tab.active{background:var(--surface-hi);color:var(--ink);border-color:var(--border-hi);}
+  .pdf-frame-wrap{border:1px solid var(--border);border-radius:14px;overflow:hidden;background:#20242e;}
+  .pdf-frame-wrap iframe{width:100%;height:78vh;border:none;display:block;}
+  .pdf-fallback{padding:40px 20px;text-align:center;color:var(--ink-soft);font-size:13.5px;}
+  .pdf-fallback a{color:var(--teal);font-weight:600;}
+  .split-scroll{max-height:82vh;overflow-y:auto;padding-right:4px;}
+
   footer{border-top:1px solid var(--border);padding:26px 40px;text-align:center;font-size:12.5px;color:var(--ink-dim);}
   footer b{color:var(--ink-soft);}
 
@@ -536,16 +550,50 @@
         <h2 style="font-size:26px;" id="examTakeTitle">Đề thi</h2>
         <div class="auth-msg" id="examExitNote" style="min-height:0;"></div>
       </div>
-      <div class="answer-key-wrap">
-        <div class="answer-key-hint">Chọn đáp án A/B/C/D cho từng câu. Không nên chuyển sang tab/ứng dụng khác trong lúc làm bài.</div>
-        <div id="examTakeGrid"></div>
-        <div class="answer-key-progress" id="examTakeProgress"></div>
+      <div class="split-view">
+        <div class="split-pane">
+          <h4>📄 File đề</h4>
+          <div id="examPdfPanel"></div>
+        </div>
+        <div class="split-pane">
+          <h4>✍️ Bài làm của bạn</h4>
+          <div class="split-scroll">
+            <div class="answer-key-hint">Chọn đáp án A/B/C/D cho từng câu. Không nên chuyển sang tab/ứng dụng khác trong lúc làm bài.</div>
+            <div id="examTakeGrid"></div>
+            <div class="answer-key-progress" id="examTakeProgress"></div>
+            <div class="course-form-actions">
+              <button class="btn-add" onclick="submitExamAttempt()">Nộp bài</button>
+              <button class="btn-cancel-edit" onclick="exitExamTake()">Thoát, không nộp</button>
+            </div>
+            <div id="examTakeMsg" class="admin-msg"></div>
+          </div>
+        </div>
       </div>
-      <div class="course-form-actions">
-        <button class="btn-add" onclick="submitExamAttempt()">Nộp bài</button>
-        <button class="btn-cancel-edit" onclick="exitExamTake()">Thoát, không nộp</button>
+    </div>
+  </section>
+
+  <!-- ===================== XEM ĐÁP ÁN (kèm file đề) ===================== -->
+  <section id="view-viewanswers" class="hidden">
+    <div class="courses-wrap">
+      <div class="courses-head">
+        <span class="eyebrow">Xem đáp án</span>
+        <h2 style="font-size:26px;" id="viewAnswersTitle">Đề thi</h2>
       </div>
-      <div id="examTakeMsg" class="admin-msg"></div>
+      <div class="split-view">
+        <div class="split-pane">
+          <h4>📄 File đề</h4>
+          <div id="answersPdfPanel"></div>
+        </div>
+        <div class="split-pane">
+          <h4>✅ Đáp án đúng</h4>
+          <div class="split-scroll">
+            <div id="viewAnswersGrid"></div>
+            <div class="course-form-actions">
+              <button class="btn-cancel-edit" onclick="exitViewAnswers()">Quay lại</button>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -816,7 +864,7 @@ function openCourses(){
 }
 
 function showView(name){
-  ['landing','dashboard','quiz','result','admin','courses','examtake'].forEach(v=>{
+  ['landing','dashboard','quiz','result','admin','courses','examtake','viewanswers'].forEach(v=>{
     const el = document.getElementById('view-'+v);
     const active = v===name;
     el.classList.toggle('hidden', !active);
@@ -1522,8 +1570,7 @@ async function loadCoursesView(){
     const bodyHtml = owned
       ? `<div class="cb-files">${filesHtml || '<span class="empty-note">Chưa có link tài liệu.</span>'}</div>
          ${hasAnswerKey ? `<button class="btn-buy" style="margin-top:8px;" onclick="startCourseExam('${c.id}')">📝 Làm bài trực tuyến</button>` : ''}
-         <button class="btn-mini save" id="ak-toggle-${c.id}" onclick="toggleCourseAnswers('${c.id}')">Xem đáp án</button>
-         <div id="ak-view-${c.id}" class="hidden"></div>`
+         <button class="btn-mini save" onclick="openCourseAnswers('${c.id}')">Xem đáp án</button>`
       : `<button class="btn-buy" onclick="purchaseCourse('${c.id}', ${price}, '${escapeHtml(c.title).replace(/'/g,"\\'")}')">Mua khoá học</button>`;
 
     return `<div class="course-browse-card glass">
@@ -1555,31 +1602,74 @@ async function purchaseCourse(courseId, price, title){
   loadCoursesView();
 }
 
-async function toggleCourseAnswers(courseId){
-  const viewEl = document.getElementById('ak-view-' + courseId);
-  const btnEl = document.getElementById('ak-toggle-' + courseId);
-  if(!viewEl) return;
+/* --- PDF panel dùng chung cho cả "Làm bài" và "Xem đáp án" --- */
+let pdfPanelState = {}; // { [containerId]: { materials, activeIdx } }
 
-  if(!viewEl.classList.contains('hidden')){
-    viewEl.classList.add('hidden');
-    btnEl.textContent = 'Xem đáp án';
+function driveEmbedUrl(link){
+  if(!link) return null;
+  const m = link.match(/\/d\/([a-zA-Z0-9_-]+)/) || link.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+  if(m) return `https://drive.google.com/file/d/${m[1]}/preview`;
+  return null;
+}
+
+function renderPdfPanel(containerId, materials){
+  pdfPanelState[containerId] = { materials: materials||[], activeIdx: 0 };
+  redrawPdfPanel(containerId);
+}
+
+function switchPdfTab(containerId, idx){
+  const st = pdfPanelState[containerId];
+  if(!st) return;
+  st.activeIdx = idx;
+  redrawPdfPanel(containerId);
+}
+
+function redrawPdfPanel(containerId){
+  const st = pdfPanelState[containerId];
+  const el = document.getElementById(containerId);
+  if(!st || !el) return;
+
+  if(!st.materials.length){
+    el.innerHTML = '<div class="pdf-frame-wrap"><div class="pdf-fallback">Khoá học này chưa có link tài liệu.</div></div>';
     return;
   }
 
-  if(!viewEl.dataset.loaded){
-    const { data, error } = await sb.from('course_answer_keys').select('answer_key').eq('course_id', courseId).single();
-    if(error){
-      viewEl.innerHTML = '<p class="empty-note">Chưa có đáp án cho khoá học này.</p>';
-    } else {
-      const answers = data.answer_key || [];
-      viewEl.innerHTML = `<div class="answer-key-view">${
-        answers.map(a=>`<div class="ak-cell">${a.no}: ${a.answer || '—'}</div>`).join('')
-      }</div>`;
-    }
-    viewEl.dataset.loaded = '1';
+  const tabsHtml = st.materials.length > 1 ? `<div class="pdf-tabs">${st.materials.map((m,i)=>
+    `<button type="button" class="pdf-tab ${i===st.activeIdx?'active':''}" onclick="switchPdfTab('${containerId}',${i})">${escapeHtml(m.label||'Tài liệu '+(i+1))}</button>`
+  ).join('')}</div>` : '';
+
+  const active = st.materials[st.activeIdx];
+  const embed = driveEmbedUrl(active.drive_link);
+  const frameHtml = embed
+    ? `<div class="pdf-frame-wrap"><iframe src="${embed}" allow="autoplay"></iframe></div>`
+    : `<div class="pdf-frame-wrap"><div class="pdf-fallback">Không nhúng được link này ngay trong trang.<br><a href="${escapeHtml(active.drive_link)}" target="_blank" rel="noopener">Mở tài liệu trong tab mới ↗</a></div></div>`;
+
+  el.innerHTML = tabsHtml + frameHtml +
+    `<div style="margin-top:8px;"><a href="${escapeHtml(active.drive_link)}" target="_blank" rel="noopener" style="font-size:12px;color:var(--ink-dim);">Mở trong tab mới ↗</a></div>`;
+}
+
+/* --- Xem đáp án: chia đôi màn hình, file đề bên trái, đáp án bên phải --- */
+async function openCourseAnswers(courseId){
+  const course = coursesCache.find(c=>c.id===courseId);
+  if(!course) return;
+
+  document.getElementById('viewAnswersTitle').textContent = course.title;
+  renderPdfPanel('answersPdfPanel', course.course_materials || []);
+
+  const answers = getCourseAnswerKey(course);
+  const gridEl = document.getElementById('viewAnswersGrid');
+  if(!answers.some(a=>a.answer)){
+    gridEl.innerHTML = '<p class="empty-note">Chưa có đáp án cho khoá học này.</p>';
+  } else {
+    gridEl.innerHTML = `<div class="answer-key-view">${
+      answers.map(a=>`<div class="ak-cell">${a.no}: ${a.answer || '—'}</div>`).join('')
+    }</div>`;
   }
-  viewEl.classList.remove('hidden');
-  btnEl.textContent = 'Ẩn đáp án';
+  showView('viewanswers');
+}
+
+function exitViewAnswers(){
+  showView('courses');
 }
 
 /* =========================================================================
@@ -1653,6 +1743,7 @@ function startCourseExam(courseId){
   document.getElementById('examTakeTitle').textContent = course.title;
   document.getElementById('examExitNote').textContent = '';
   document.getElementById('examTakeMsg').textContent = '';
+  renderPdfPanel('examPdfPanel', course.course_materials || []);
   renderExamAnswerGrid();
 
   if(!examVisHandlerBound){
