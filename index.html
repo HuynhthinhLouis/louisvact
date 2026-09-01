@@ -373,6 +373,16 @@
   /* ---------- SPLIT VIEW: file đề (trái) + đề/đáp án (phải) ---------- */
   .split-view{display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start;margin-top:20px;}
   @media (max-width:920px){.split-view{grid-template-columns:1fr;}}
+
+  /* ---------- ĐỒNG HỒ ĐẾM NGƯỢC LÀM BÀI ---------- */
+  .exam-timer{
+    font-family:'IBM Plex Mono',monospace;font-size:18px;font-weight:700;
+    padding:10px 18px;border-radius:12px;white-space:nowrap;
+    background:rgba(37,99,235,0.08);border:1px solid var(--gold-dim);color:var(--gold);
+    transition:background .3s ease,border-color .3s ease,color .3s ease;
+  }
+  .exam-timer.low{background:rgba(220,38,38,0.1);border-color:rgba(220,38,38,0.4);color:var(--coral);animation:pulseTimer 1s ease-in-out infinite;}
+  @keyframes pulseTimer{ 50%{opacity:.55;} }
   .split-pane{min-width:0;}
   .split-pane h4{font-size:14px;color:var(--ink);margin-bottom:10px;}
   .pdf-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;}
@@ -629,10 +639,13 @@
   <!-- ===================== LÀM BÀI TRỰC TUYẾN ===================== -->
   <section id="view-examtake" class="hidden">
     <div class="courses-wrap">
-      <div class="courses-head">
-        <span class="eyebrow">Làm bài trực tuyến</span>
-        <h2 style="font-size:26px;" id="examTakeTitle">Đề thi</h2>
-        <div class="auth-msg" id="examExitNote" style="min-height:0;"></div>
+      <div class="courses-head" style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap;">
+        <div>
+          <span class="eyebrow">Làm bài trực tuyến</span>
+          <h2 style="font-size:26px;" id="examTakeTitle">Đề thi</h2>
+          <div class="auth-msg" id="examExitNote" style="min-height:0;"></div>
+        </div>
+        <div class="exam-timer" id="examCountdown">⏳ 150:00</div>
       </div>
       <div class="split-view">
         <div class="split-pane">
@@ -831,6 +844,9 @@ let coursesCache = []; // cache danh sách khoá học cho học viên (dùng kh
 let currentExamCourse = null;
 let examExitCount = 0;
 let examStartTime = null; // dùng để tự động ghi nhận thời gian học khi nộp bài
+const EXAM_DURATION_MINUTES = 150; // mỗi khoá học được tính 150 phút làm bài
+let examDeadline = null;      // mốc thời gian (ms) phải nộp bài
+let examTimerInterval = null; // interval cập nhật đồng hồ đếm ngược mỗi giây
 let examVisHandlerBound = false;
 
 function formatVND(n){
@@ -1930,6 +1946,39 @@ function onExamVisibilityChange(){
   }
 }
 
+// --- Đồng hồ đếm ngược thời gian làm bài (mỗi khoá học: EXAM_DURATION_MINUTES phút) ---
+function startExamTimer(){
+  stopExamTimer();
+  examDeadline = Date.now() + EXAM_DURATION_MINUTES*60000;
+  updateExamTimerDisplay();
+  examTimerInterval = setInterval(updateExamTimerDisplay, 1000);
+}
+
+function stopExamTimer(){
+  if(examTimerInterval){ clearInterval(examTimerInterval); examTimerInterval = null; }
+}
+
+function updateExamTimerDisplay(){
+  const el = document.getElementById('examCountdown');
+  if(!el) return;
+  const remainMs = examDeadline - Date.now();
+  if(remainMs <= 0){
+    el.textContent = '⏳ 00:00';
+    el.classList.add('low');
+    stopExamTimer();
+    if(currentExamCourse){
+      alert('Đã hết 150 phút làm bài. Bài làm sẽ được tự động nộp.');
+      submitExamAttempt();
+    }
+    return;
+  }
+  const totalSec = Math.floor(remainMs/1000);
+  const mm = String(Math.floor(totalSec/60)).padStart(2,'0');
+  const ss = String(totalSec%60).padStart(2,'0');
+  el.textContent = `⏳ ${mm}:${ss}`;
+  el.classList.toggle('low', totalSec <= 300); // cảnh báo khi còn ≤ 5 phút
+}
+
 function startCourseExam(courseId){
   const course = coursesCache.find(c=>c.id===courseId);
   if(!course) return;
@@ -1946,6 +1995,7 @@ function startCourseExam(courseId){
   document.getElementById('examTakeMsg').textContent = '';
   renderPdfPanel('examPdfPanel', course.course_materials || []);
   renderExamAnswerGrid();
+  startExamTimer();
 
   if(!examVisHandlerBound){
     document.addEventListener('visibilitychange', onExamVisibilityChange);
@@ -1956,6 +2006,7 @@ function startCourseExam(courseId){
 
 function exitExamTake(){
   if(!confirm('Thoát mà không nộp bài? Kết quả sẽ không được lưu.')) return;
+  stopExamTimer();
   currentExamCourse = null;
   examStartTime = null;
   showView('courses');
@@ -1963,6 +2014,7 @@ function exitExamTake(){
 
 async function submitExamAttempt(){
   if(!currentExamCourse) return;
+  stopExamTimer();
   const msgEl = document.getElementById('examTakeMsg');
   const studentAnswers = collectExamAnswers();
   const keyMap = {};
@@ -1975,7 +2027,9 @@ async function submitExamAttempt(){
   const total = VACT_TOTAL_QUESTIONS;
   const finishedCourse = currentExamCourse;
   const finishedExitCount = examExitCount;
-  const elapsedMinutes = examStartTime ? Math.max(1, Math.round((Date.now()-examStartTime)/60000)) : null;
+  const elapsedMinutes = examStartTime
+    ? Math.min(EXAM_DURATION_MINUTES, Math.max(1, Math.round((Date.now()-examStartTime)/60000)))
+    : null;
 
   msgEl.textContent = 'Đang nộp bài…';
   msgEl.className = 'admin-msg';
