@@ -177,63 +177,54 @@
   .dash-head{padding:48px 0 8px;}
   .dash-head .eyebrow{margin-bottom:8px;}
   .dash-head h2{font-size:30px;color:var(--ink);}
-  .dash-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px;margin:34px 0 56px;}
-  .cat-card{
-    padding:24px;
-    display:flex;flex-direction:column;gap:14px;
-    transition:transform .2s ease, border-color .2s ease;
-  }
-  .cat-card:hover{transform:translateY(-3px);border-color:var(--border-hi);}
-  .cat-card .tag{font-size:10.5px;text-transform:uppercase;letter-spacing:.1em;color:var(--teal);font-weight:700;}
-  .cat-card h3{font-size:18.5px;color:var(--ink);}
-  .cat-card p{font-size:13.5px;color:var(--ink-soft);line-height:1.55;margin:0;flex:1;}
-  .cat-card .score-line{display:flex;justify-content:space-between;align-items:center;}
-  .cat-card .score-line span:first-child{font-size:12.5px;color:var(--ink-dim);}
-  .cat-card .score-line .val{font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:15px;color:var(--ink);}
-  .cat-card .bar{height:6px;background:rgba(16,24,40,0.07);border-radius:6px;overflow:hidden;}
-  .cat-card .bar span{display:block;height:100%;background:linear-gradient(90deg,var(--gold),#60A5FA);border-radius:6px;transition:width .6s cubic-bezier(.2,.7,.3,1);}
-  .cat-card button{
-    padding:10px 0;border-radius:10px;border:1px solid var(--border-hi);background:rgba(16,24,40,0.05);
-    color:var(--ink);font-weight:600;font-size:13.5px;transition:all .18s ease;
-  }
-  .cat-card button:hover{background:var(--ink);color:var(--bg);}
-  .compass-section{padding:10px 0 60px;display:grid;grid-template-columns:340px 1fr;gap:40px;align-items:center;}
-  .history h3{font-size:15.5px;margin-bottom:14px;color:var(--ink);}
-  .history-row{
-    display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--border);font-size:13.5px;
-  }
-  .history-row .cat{font-weight:600;color:var(--ink);}
-  .history-row .when{color:var(--ink-dim);font-size:12px;}
   .empty-note{color:var(--ink-dim);font-size:13.5px;}
 
-  /* ---------- QUIZ ---------- */
-  .quiz-wrap{max-width:680px;margin:0 auto;padding:50px 0 90px;}
-  .quiz-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:26px;}
-  .quiz-top .progress-track{flex:1;height:6px;background:rgba(16,24,40,0.07);border-radius:6px;margin:0 20px;overflow:hidden;}
-  .quiz-top .progress-fill{height:100%;background:linear-gradient(90deg,var(--teal),#2DD4BF);transition:width .4s ease;}
-  .quiz-top .qcount{font-family:'IBM Plex Mono',monospace;font-size:13px;white-space:nowrap;color:var(--ink-soft);}
-  .quiz-cat-badge{
-    display:inline-block;font-size:11px;text-transform:uppercase;letter-spacing:.1em;
-    color:var(--teal);font-weight:700;margin-bottom:10px;
+  /* ---------- THEO DÕI HỌC TẬP (streak, mục tiêu, thời gian, tiến bộ) ---------- */
+  .track-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin:34px 0 28px;}
+  .track-stat{padding:22px 24px;display:flex;flex-direction:column;gap:6px;}
+  .track-stat .ts-label{font-size:11.5px;text-transform:uppercase;letter-spacing:.09em;color:var(--ink-dim);font-weight:600;}
+  .track-stat .ts-value{font-family:'IBM Plex Mono',monospace;font-size:26px;font-weight:600;color:var(--ink);display:flex;align-items:baseline;gap:6px;}
+  .track-stat .ts-value .unit{font-size:13px;color:var(--ink-dim);font-weight:500;}
+  .track-stat .ts-sub{font-size:12.5px;color:var(--ink-soft);}
+  .track-stat .bar{height:7px;background:rgba(16,24,40,0.07);border-radius:6px;overflow:hidden;margin-top:4px;}
+  .track-stat .bar span{display:block;height:100%;background:linear-gradient(90deg,var(--teal),#2DD4BF);border-radius:6px;transition:width .6s cubic-bezier(.2,.7,.3,1);}
+  .track-stat.streak .ts-value{color:#D97706;}
+  .goal-form{display:flex;gap:10px;align-items:flex-end;margin-top:10px;flex-wrap:wrap;}
+  .goal-form .field{margin-bottom:0;}
+  .goal-form input{width:90px;}
+  .goal-form .btn-mini{white-space:nowrap;}
+
+  .track-panel{padding:26px;margin-bottom:24px;}
+  .track-panel h3{font-size:16px;color:var(--ink);margin-bottom:4px;}
+  .track-panel .panel-sub{font-size:12.5px;color:var(--ink-dim);margin-bottom:18px;}
+
+  .cal-heatmap{display:grid;grid-auto-flow:column;grid-template-rows:repeat(7,1fr);gap:3px;overflow-x:auto;padding-bottom:6px;}
+  .cal-cell{width:12px;height:12px;border-radius:3px;background:rgba(16,24,40,0.06);}
+  .cal-cell[data-level="1"]{background:rgba(13,148,136,0.35);}
+  .cal-cell[data-level="2"]{background:rgba(13,148,136,0.6);}
+  .cal-cell[data-level="3"]{background:rgba(13,148,136,0.9);}
+  .cal-legend{display:flex;align-items:center;gap:6px;margin-top:12px;font-size:11px;color:var(--ink-dim);}
+  .cal-legend .cal-cell{width:10px;height:10px;}
+
+  .course-select{
+    padding:9px 12px;border:1px solid var(--border);border-radius:10px;
+    font-size:13.5px;font-family:inherit;background:rgba(16,24,40,0.03);color:var(--ink);margin-bottom:16px;
   }
-  .quiz-q{font-size:20px;line-height:1.5;margin-bottom:26px;font-family:'Sora',sans-serif;font-weight:600;color:var(--ink);}
-  .opt{
-    display:block;width:100%;text-align:left;padding:15px 18px;margin-bottom:10px;
-    border:1.5px solid var(--border);border-radius:13px;background:rgba(16,24,40,0.03);
-    color:var(--ink);font-size:14.5px;
-    transition:all .15s ease;
-  }
-  .opt:hover:not(:disabled){border-color:var(--teal);background:rgba(13,148,136,0.06);}
-  .opt.selected{border-color:var(--ink-soft);}
-  .opt.correct{border-color:var(--teal);background:rgba(13,148,136,0.14);}
-  .opt.wrong{border-color:var(--coral);background:rgba(220,38,38,0.14);}
-  .quiz-actions{display:flex;justify-content:space-between;margin-top:26px;}
+  .chart-empty{color:var(--ink-dim);font-size:13.5px;padding:20px 0;}
+
+  .course-time-table{width:100%;border-collapse:collapse;font-size:13.5px;}
+  .course-time-table th{text-align:left;padding:8px 10px;color:var(--ink-dim);font-size:11px;text-transform:uppercase;letter-spacing:.07em;font-weight:600;border-bottom:1px solid var(--border-hi);}
+  .course-time-table td{padding:10px;border-bottom:1px solid var(--border);color:var(--ink);}
+  .course-time-table tr:last-child td{border-bottom:none;}
+  .btn-log{padding:6px 12px;border-radius:8px;border:1px solid var(--gold-dim);background:rgba(37,99,235,0.06);color:var(--gold);font-size:12px;font-weight:600;}
+  .btn-log:hover{background:rgba(37,99,235,0.12);}
+
+  /* ---------- NÚT DÙNG CHUNG (giữ lại từ layout cũ) ---------- */
   .btn-ghost{padding:11px 20px;border-radius:10px;border:1px solid var(--border-hi);background:transparent;color:var(--ink-soft);font-weight:600;font-size:14px;transition:all .18s ease;}
   .btn-ghost:hover{color:var(--ink);border-color:var(--ink-soft);}
   .btn-next{padding:11px 24px;border-radius:10px;border:none;background:linear-gradient(135deg,var(--gold),#60A5FA);color:#FFFFFF;font-weight:700;font-size:14px;transition:all .18s ease;}
   .btn-next:hover:not(:disabled){transform:translateY(-1px);}
   .btn-next:disabled{opacity:.35;cursor:default;}
-  .explain{margin-top:16px;padding:14px 16px;background:rgba(16,24,40,0.04);border:1px solid var(--border);border-radius:12px;font-size:13.5px;line-height:1.6;color:var(--ink-soft);}
 
   /* ---------- RESULT ---------- */
   .result-wrap{max-width:640px;margin:0 auto;padding:60px 0 90px;text-align:center;}
@@ -398,8 +389,7 @@
 
   @media(max-width:820px){
     .hero{grid-template-columns:1fr;padding-top:44px;}
-    .dash-grid{grid-template-columns:1fr;}
-    .compass-section{grid-template-columns:1fr;}
+    .track-stats{grid-template-columns:1fr;}
     nav{padding:16px 20px;}
     main{padding:0 20px;}
     .admin-add-grid{grid-template-columns:1fr 1fr;}
@@ -448,7 +438,7 @@
 
   /* Card: nâng nhẹ + sáng viền khi hover, thống nhất trên mọi loại thẻ glass */
   .glass{ transition: transform .28s cubic-bezier(.2,.8,.2,1), box-shadow .28s ease, border-color .28s ease; }
-  .course-browse-card:hover, .course-item:hover, .compass-card:hover{
+  .course-browse-card:hover, .course-item:hover, .compass-card:hover, .track-stat:hover{
     transform:translateY(-3px);
     box-shadow:0 20px 40px -26px rgba(16,24,40,0.22);
     border-color:var(--border-hi);
@@ -479,17 +469,17 @@
   .bar span{ transition: width .6s cubic-bezier(.2,.8,.2,1); }
 
   /* Xuất hiện tuần tự cho lưới thẻ khi vào trang, thay vì hiện cùng lúc cứng nhắc */
-  .dash-grid.view-enter .cat-card, .course-browse-grid .course-browse-card{
+  .track-stats.view-enter .track-stat, .course-browse-grid .course-browse-card{
     animation: fadeUp .5s cubic-bezier(.2,.7,.3,1) both;
   }
-  .dash-grid .cat-card:nth-child(2){ animation-delay:.06s; }
-  .dash-grid .cat-card:nth-child(3){ animation-delay:.12s; }
+  .track-stats .track-stat:nth-child(2){ animation-delay:.06s; }
+  .track-stats .track-stat:nth-child(3){ animation-delay:.12s; }
   .course-browse-grid .course-browse-card:nth-child(2){ animation-delay:.05s; }
   .course-browse-grid .course-browse-card:nth-child(3){ animation-delay:.1s; }
   .course-browse-grid .course-browse-card:nth-child(4){ animation-delay:.15s; }
 
   @media (prefers-reduced-motion: reduce){
-    nav, button, .pill, .glass, .bar span, .cat-card, .course-browse-card{ animation:none !important; transition:none !important; }
+    nav, button, .pill, .glass, .bar span, .track-stat, .course-browse-card{ animation:none !important; transition:none !important; }
   }
 </style>
 </head>
@@ -515,22 +505,22 @@
     <div class="hero">
       <div>
         <span class="eyebrow">Ôn luyện Đánh giá năng lực · ĐHQG-HCM</span>
-        <h1>Luyện đề, xem <em>điểm mạnh — điểm yếu</em>,<br>vào UIT đúng năng lực.</h1>
-        <p class="lede">Đăng nhập để làm câu hỏi mẫu theo 3 nhóm năng lực của kỳ thi ĐGNL, lưu kết quả vào tài khoản của bạn và theo dõi tiến bộ qua từng lần luyện.</p>
+        <h1>Học đều mỗi ngày, <em>theo dõi tiến bộ</em>,<br>vào UIT đúng năng lực.</h1>
+        <p class="lede">Đăng nhập để học theo khoá đề thi PDF, làm bài trực tuyến và theo dõi chuỗi ngày học, thời gian ôn luyện cùng tiến bộ điểm số của chính bạn qua từng khoá học.</p>
         <div class="hero-stats">
-          <div><div class="num">03</div><div class="lbl">Nhóm năng lực</div></div>
-          <div><div class="num">15</div><div class="lbl">Câu / lượt luyện</div></div>
-          <div><div class="num">∞</div><div class="lbl">Số lần làm lại</div></div>
+          <div><div class="num">🔥</div><div class="lbl">Chuỗi ngày học liên tục</div></div>
+          <div><div class="num">⏱</div><div class="lbl">Thời gian học từng khoá</div></div>
+          <div><div class="num">🎯</div><div class="lbl">Mục tiêu học mỗi tuần</div></div>
         </div>
       </div>
       <div class="compass-card glass">
-        <h3>La bàn năng lực</h3>
-        <div class="compass-title">Xem bạn đang đứng ở đâu</div>
-        <div id="landingCompass"></div>
+        <h3>Theo dõi học tập</h3>
+        <div class="compass-title">Mọi tiến bộ đều được ghi lại</div>
         <div class="compass-legend">
-          <div class="row"><span><span class="dot" style="background:var(--gold)"></span>Sử dụng ngôn ngữ</span><b>—</b></div>
-          <div class="row"><span><span class="dot" style="background:var(--gold)"></span>Toán học &amp; Tư duy logic</span><b>—</b></div>
-          <div class="row"><span><span class="dot" style="background:var(--gold)"></span>Giải quyết vấn đề</span><b>—</b></div>
+          <div class="row"><span>🔥 Lịch hoạt động &amp; chuỗi ngày học</span></div>
+          <div class="row"><span>📈 Biểu đồ điểm số theo từng khoá</span></div>
+          <div class="row"><span>⏱ Thời gian học / làm bài mỗi khoá</span></div>
+          <div class="row"><span>🎯 Đặt mục tiêu giờ học, số khoá mỗi tuần</span></div>
         </div>
       </div>
     </div>
@@ -556,7 +546,7 @@
         </div>
 
         <div id="authMsg" class="auth-msg"></div>
-        <div class="auth-note">Dữ liệu đăng nhập &amp; kết quả luyện tập được lưu trong Supabase của bạn. Xem <code>README.md</code> để cấu hình.</div>
+        <div class="auth-note">Dữ liệu đăng nhập &amp; tiến độ học tập được lưu trong Supabase của bạn. Xem <code>README.md</code> để cấu hình.</div>
       </div>
     </div>
   </section>
@@ -569,37 +559,45 @@
       <div class="balance-pill" style="margin-top:14px;width:fit-content;"><span class="ic">💰</span><span id="dashBalance">0đ</span> — Số dư khả dụng</div>
     </div>
 
-    <div class="compass-section">
-      <div class="compass-card glass" style="border-radius:var(--radius);">
-        <h3>Điểm trung bình theo nhóm</h3>
-        <div class="compass-title">La bàn năng lực của bạn</div>
-        <div id="dashCompass"></div>
+    <div class="track-stats view-enter" id="trackStats"></div>
+
+    <div class="track-panel glass">
+      <h3>🎯 Mục tiêu học tập hàng tuần</h3>
+      <div class="panel-sub">Đặt mục tiêu để các thẻ thống kê phía trên hiện tiến độ so với mục tiêu.</div>
+      <div class="goal-form">
+        <div class="field"><label>Số giờ / tuần</label><input type="number" min="0" step="0.5" id="goalHoursInput" placeholder="VD: 10"></div>
+        <div class="field"><label>Số khoá / tuần</label><input type="number" min="0" step="1" id="goalCoursesInput" placeholder="VD: 2"></div>
+        <button class="btn-mini save" onclick="saveStudyGoal()">Lưu mục tiêu</button>
       </div>
-      <div class="history">
-        <h3>Lịch sử luyện tập</h3>
-        <div id="historyList"><p class="empty-note">Chưa có lượt luyện nào. Bắt đầu bên dưới nhé.</p></div>
+      <div id="goalMsg" class="admin-msg"></div>
+    </div>
+
+    <div class="track-panel glass">
+      <h3>🔥 Lịch hoạt động học tập</h3>
+      <div class="panel-sub">Mỗi ô là một ngày. Màu càng đậm — thời gian học ngày đó càng nhiều.</div>
+      <div class="cal-heatmap" id="activityCalendar"></div>
+      <div class="cal-legend">
+        <span>Ít</span>
+        <span class="cal-cell" data-level="0"></span>
+        <span class="cal-cell" data-level="1"></span>
+        <span class="cal-cell" data-level="2"></span>
+        <span class="cal-cell" data-level="3"></span>
+        <span>Nhiều</span>
       </div>
     </div>
 
-    <span class="eyebrow">Chọn nhóm để luyện</span>
-    <div class="dash-grid" id="catGrid"></div>
-  </section>
+    <div class="track-panel glass">
+      <h3>📈 Tiến bộ điểm số theo khoá học</h3>
+      <div class="panel-sub">Chọn một khoá học để xem điểm số qua các lần làm bài.</div>
+      <select class="course-select" id="progressCourseSelect" onchange="renderScoreChart()"></select>
+      <div id="scoreChartWrap"></div>
+    </div>
 
-  <!-- ===================== QUIZ ===================== -->
-  <section id="view-quiz" class="hidden">
-    <div class="quiz-wrap">
-      <div class="quiz-top">
-        <span class="qcount" id="qCount">1 / 5</span>
-        <div class="progress-track"><div class="progress-fill" id="quizProgress" style="width:0%"></div></div>
-        <button class="btn-ghost" onclick="exitQuiz()">Thoát</button>
-      </div>
-      <span class="quiz-cat-badge" id="quizCatBadge"></span>
-      <div class="quiz-q" id="quizQuestion"></div>
-      <div id="quizOptions"></div>
-      <div id="quizExplain" class="explain hidden"></div>
-      <div class="quiz-actions">
-        <span></span>
-        <button class="btn-next" id="btnNext" disabled onclick="nextQuestion()">Câu tiếp theo</button>
+    <div class="track-panel glass">
+      <h3>⏱ Thời gian học theo từng khoá</h3>
+      <div class="panel-sub">Thời gian được tự động ghi khi làm bài trực tuyến, hoặc bạn có thể ghi thủ công.</div>
+      <div class="admin-table-wrap">
+        <table class="course-time-table" id="courseTimeTable"></table>
       </div>
     </div>
   </section>
@@ -712,7 +710,7 @@
                 <th>Họ và tên</th>
                 <th>Quyền</th>
                 <th>Số dư (đ)</th>
-                <th>Lượt luyện</th>
+                <th>Số bài đã làm</th>
                 <th>Hành động</th>
               </tr>
             </thead>
@@ -802,39 +800,6 @@ const sbAdmin = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
 });
 
 /* =========================================================================
-   2. NGÂN HÀNG CÂU HỎI MẪU (demo) — 3 nhóm x 5 câu
-   ========================================================================= */
-const CATEGORIES = [
-  { key: "ngonngu", label: "Sử dụng ngôn ngữ", desc: "Đọc hiểu, từ vựng, ngữ pháp tiếng Việt & tiếng Anh." },
-  { key: "toanlogic", label: "Toán học & Tư duy logic", desc: "Suy luận số liệu, dãy số, logic hình thức." },
-  { key: "giaiquyetvandề", label: "Giải quyết vấn đề", desc: "Khoa học tự nhiên, xã hội, phân tích tình huống." },
-];
-
-const QUESTION_BANK = {
-  ngonngu: [
-    { q: "Từ nào KHÔNG cùng nhóm nghĩa với các từ còn lại?", opts: ["Kiên trì","Bền bỉ","Nản chí","Nhẫn nại"], correct: 2, explain: "\"Nản chí\" mang nghĩa trái ngược, các từ còn lại đều chỉ sự bền bỉ, không bỏ cuộc." },
-    { q: "Chọn từ đồng nghĩa với \"minh bạch\":", opts: ["Rõ ràng","Mơ hồ","Bí mật","Phức tạp"], correct: 0, explain: "\"Minh bạch\" nghĩa là rõ ràng, công khai, không che giấu." },
-    { q: "\"Honesty is the best policy\" gần nghĩa nhất với câu tục ngữ Việt Nam nào?", opts: ["Ăn cây nào rào cây nấy","Thật thà là cha quỷ quái","Cây ngay không sợ chết đứng","Một điều nhịn chín điều lành"], correct: 2, explain: "Cả hai đều đề cao sự trung thực, ngay thẳng sẽ không phải lo sợ điều gì." },
-    { q: "Xác định lỗi sai trong câu: \"Vì trời mưa to nên em đến trễ.\"", opts: ["Không có lỗi","Sai quan hệ từ","Thiếu chủ ngữ","Sai chính tả"], correct: 0, explain: "Câu đúng ngữ pháp, cặp quan hệ từ \"vì...nên\" dùng hợp lý để chỉ nguyên nhân - kết quả." },
-    { q: "Từ \"tri kỷ\" trong tiếng Việt chỉ điều gì?", opts: ["Người bạn rất hiểu mình","Người xa lạ","Người có quyền lực","Người giàu có"], correct: 0, explain: "\"Tri kỷ\" là người bạn thấu hiểu mình sâu sắc." },
-  ],
-  toanlogic: [
-    { q: "Tìm số tiếp theo trong dãy: 2, 6, 12, 20, 30, ?", opts: ["36","40","42","48"], correct: 2, explain: "Hiệu giữa các số tăng dần 4,6,8,10,12 → 30 + 12 = 42." },
-    { q: "Nếu 3 công nhân xây xong bức tường trong 12 ngày, thì 6 công nhân (làm cùng năng suất) mất bao lâu?", opts: ["3 ngày","6 ngày","9 ngày","4 ngày"], correct: 1, explain: "Gấp đôi số công nhân thì thời gian giảm một nửa: 12/2 = 6 ngày." },
-    { q: "Một lớp có 40 học sinh, tỉ lệ nam:nữ là 3:5. Số học sinh nữ là bao nhiêu?", opts: ["15","20","24","25"], correct: 3, explain: "Tổng phần = 8, mỗi phần = 5 học sinh → nữ = 5x5 = 25." },
-    { q: "Trong 5 người A, B, C, D, E xếp hàng, A đứng ngay trước B, C đứng cuối. Có bao nhiêu vị trí có thể cho D?", opts: ["1","2","3","4"], correct: 2, explain: "Với C cố định ở cuối và A-B liền kề, D có thể đứng ở 3 vị trí còn lại khả dĩ trong các cách sắp xếp hợp lệ." },
-    { q: "Giá một món hàng giảm 20% còn 240.000đ. Giá gốc là bao nhiêu?", opts: ["280.000đ","288.000đ","300.000đ","320.000đ"], correct: 2, explain: "240.000 = 80% giá gốc → giá gốc = 240.000 / 0.8 = 300.000đ." },
-  ],
-  giaiquyetvandề: [
-    { q: "Hiện tượng nào sau đây giải thích vì sao bầu trời có màu xanh?", opts: ["Tán xạ Rayleigh","Khúc xạ ánh sáng","Hiện tượng quang hợp","Hiệu ứng nhà kính"], correct: 0, explain: "Ánh sáng xanh bị tán xạ mạnh hơn trong khí quyển do bước sóng ngắn (tán xạ Rayleigh)." },
-    { q: "Một thành phố muốn giảm ùn tắc giao thông giờ cao điểm. Giải pháp nào tác động trực tiếp nhất đến NGUYÊN NHÂN gốc rễ?", opts: ["Xây thêm bãi đỗ xe","Khuyến khích giờ làm việc lệch ca","Sơn lại vạch kẻ đường","Tăng tiền phạt vượt đèn đỏ"], correct: 1, explain: "Lệch giờ làm giúp phân tán lưu lượng xe, giải quyết đúng nguyên nhân là dồn ứ cùng một khung giờ." },
-    { q: "Vì sao nước đá nổi trên mặt nước lỏng?", opts: ["Đá nhẹ hơn nước ở mọi nhiệt độ","Nước đá có khối lượng riêng nhỏ hơn nước lỏng","Do áp suất khí quyển","Do sức căng bề mặt"], correct: 1, explain: "Cấu trúc tinh thể của nước đá khiến các phân tử xếp thưa hơn, làm khối lượng riêng giảm." },
-    { q: "Một biểu đồ cho thấy doanh thu tăng nhưng lợi nhuận giảm liên tục. Nguyên nhân hợp lý nhất cần kiểm tra trước?", opts: ["Giá vốn/chi phí tăng nhanh hơn doanh thu","Doanh thu ghi nhận sai","Số lượng nhân viên giảm","Thời tiết thay đổi"], correct: 0, explain: "Doanh thu tăng mà lợi nhuận giảm thường do chi phí (giá vốn, vận hành) tăng nhanh hơn." },
-    { q: "Trong thí nghiệm khoa học, biến nào cần được giữ không đổi để kết quả đáng tin cậy?", opts: ["Biến phụ thuộc","Biến độc lập","Biến kiểm soát","Biến ngẫu nhiên"], correct: 2, explain: "Biến kiểm soát phải giữ cố định để đảm bảo kết quả chỉ phản ánh ảnh hưởng của biến độc lập." },
-  ],
-};
-
-/* =========================================================================
    2b. CẤU TRÚC ĐỀ THI VACT — 120 câu chia theo phần (dùng cho đáp án khoá học)
    ========================================================================= */
 const VACT_SECTIONS = [
@@ -851,9 +816,13 @@ const VACT_TOTAL_QUESTIONS = VACT_SECTIONS.reduce((s,x)=>s+x.count, 0); // 120
    ========================================================================= */
 let currentUser = null;
 let currentProfile = null; // { id, full_name, school, email, balance, is_admin }
-let currentQuiz = null; // { catKey, questions:[], index:0, answers:[], selectedIdx:null, locked:false }
-let latestScores = { ngonngu:null, toanlogic:null, giaiquyetvandề:null };
 let adminCourses = []; // cache danh sách khoá học cho admin
+
+// --- Theo dõi học tập (tracking) ---
+let allCoursesLite = [];      // [{id, title}] tất cả khoá học, dùng để hiện tên
+let userExamAttempts = [];    // course_exam_attempts của user hiện tại
+let userStudySessions = [];   // study_sessions của user hiện tại
+let currentStudyGoal = { weekly_hours_goal: 0, weekly_courses_goal: 0 };
 let editingCourseId = null; // null = đang tạo mới, có giá trị = đang sửa khoá học này
 let materialDraftRows = []; // các link Google Drive MỚI sẽ thêm khi lưu khoá học: [{label, link}]
 let coursesCache = []; // cache danh sách khoá học cho học viên (dùng khi bấm "Làm bài")
@@ -861,10 +830,25 @@ let coursesCache = []; // cache danh sách khoá học cho học viên (dùng kh
 // --- Làm bài trực tuyến + đếm số lần thoát tab ---
 let currentExamCourse = null;
 let examExitCount = 0;
+let examStartTime = null; // dùng để tự động ghi nhận thời gian học khi nộp bài
 let examVisHandlerBound = false;
 
 function formatVND(n){
   return (Number(n)||0).toLocaleString('vi-VN') + 'đ';
+}
+
+/* --- Helper ngày tháng theo giờ địa phương (tránh lệch múi giờ UTC) --- */
+function localDateStr(d){
+  const y = d.getFullYear(), m = String(d.getMonth()+1).padStart(2,'0'), day = String(d.getDate()).padStart(2,'0');
+  return `${y}-${m}-${day}`;
+}
+function startOfWeek(d){ // Thứ 2 là ngày đầu tuần
+  const dt = new Date(d);
+  const day = dt.getDay(); // 0=CN
+  const diff = (day===0 ? -6 : 1-day);
+  dt.setDate(dt.getDate()+diff);
+  dt.setHours(0,0,0,0);
+  return dt;
 }
 
 // Đổ bóng cho thanh nav khi người dùng cuộn trang xuống, tạo cảm giác chiều sâu.
@@ -956,7 +940,7 @@ function openCourses(){
 }
 
 function showView(name){
-  ['landing','dashboard','quiz','result','admin','courses','examtake','viewanswers'].forEach(v=>{
+  ['landing','dashboard','result','admin','courses','examtake','viewanswers'].forEach(v=>{
     const el = document.getElementById('view-'+v);
     const active = v===name;
     el.classList.toggle('hidden', !active);
@@ -990,44 +974,285 @@ function escapeHtml(s){
 }
 
 /* =========================================================================
-   6. COMPASS (radar chart, signature element — glows + animates in)
+   6. THEO DÕI HỌC TẬP — streak, lịch hoạt động, mục tiêu, thời gian, tiến bộ
    ========================================================================= */
-function renderCompass(containerId, scores){
-  const size = 220, cx = size/2, cy = size/2, r = 82;
-  const axes = CATEGORIES.map(c => scores[c.key] ?? 0);
-  const angleFor = i => (-Math.PI/2) + i * (2*Math.PI/3);
-  const pt = (i, val) => {
-    const a = angleFor(i);
-    const rad = r * (val/100);
-    return [cx + rad*Math.cos(a), cy + rad*Math.sin(a)];
-  };
-  const gridPts = (frac) => CATEGORIES.map((_,i)=>{
-    const a = angleFor(i); return `${cx + r*frac*Math.cos(a)},${cy + r*frac*Math.sin(a)}`;
-  }).join(' ');
-  const dataPts = CATEGORIES.map((_,i)=> pt(i, axes[i]).join(',')).join(' ');
 
-  let svg = `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">
-    <defs>
-      <radialGradient id="glow-${containerId}" cx="50%" cy="50%" r="60%">
-        <stop offset="0%" stop-color="#2563EB" stop-opacity="0.28"/>
-        <stop offset="100%" stop-color="#2563EB" stop-opacity="0"/>
-      </radialGradient>
-    </defs>`;
-  [0.33,0.66,1].forEach(f=>{
-    svg += `<polygon points="${gridPts(f)}" fill="none" stroke="rgba(16,24,40,0.09)" stroke-width="1"/>`;
+// Gộp ngày hoạt động từ cả "làm bài trực tuyến" và "buổi học đã ghi nhận",
+// trả về Map: 'YYYY-MM-DD' -> tổng số phút hoạt động ngày đó (ước lượng).
+function buildActivityMap(){
+  const map = {};
+  userStudySessions.forEach(s=>{
+    const key = s.session_date; // đã là 'YYYY-MM-DD' từ DB
+    map[key] = (map[key]||0) + (Number(s.minutes)||0);
   });
-  CATEGORIES.forEach((_,i)=>{
-    const [x,y] = pt(i,100);
-    svg += `<line x1="${cx}" y1="${cy}" x2="${x}" y2="${y}" stroke="rgba(16,24,40,0.09)"/>`;
+  // Buổi thi không có trong study_sessions (vd. dữ liệu cũ) vẫn tính là có hoạt động,
+  // nhưng không cộng thêm phút để tránh đếm trùng với session tự động ghi khi nộp bài.
+  userExamAttempts.forEach(a=>{
+    const key = localDateStr(new Date(a.created_at));
+    if(map[key] === undefined) map[key] = 0;
   });
-  svg += `<circle cx="${cx}" cy="${cy}" r="70" fill="url(#glow-${containerId})"/>`;
-  svg += `<polygon points="${dataPts}" fill="rgba(37,99,235,0.28)" stroke="#2563EB" stroke-width="2.5" style="transition:all .8s cubic-bezier(.2,.7,.3,1);"/>`;
-  CATEGORIES.forEach((_,i)=>{
-    const [x,y] = pt(i,axes[i]);
-    svg += `<circle cx="${x}" cy="${y}" r="4.5" fill="#2563EB" stroke="#FFFFFF" stroke-width="1.5"/>`;
+  return map;
+}
+
+function computeStreak(activityMap){
+  const today = new Date();
+  let cursor = new Date(today);
+  if(activityMap[localDateStr(cursor)] === undefined){
+    cursor.setDate(cursor.getDate()-1); // hôm nay chưa học thì tính từ hôm qua
+  }
+  let streak = 0;
+  while(activityMap[localDateStr(cursor)] !== undefined){
+    streak++;
+    cursor.setDate(cursor.getDate()-1);
+  }
+  return streak;
+}
+
+function renderActivityCalendar(activityMap){
+  const days = 91; // ~13 tuần
+  const today = new Date();
+  today.setHours(0,0,0,0);
+  const start = new Date(today);
+  start.setDate(start.getDate() - (days-1));
+  // Căn cho cột đầu tiên bắt đầu đúng Thứ 2
+  const startDow = start.getDay(); // 0=CN..6=T7
+  const pad = (startDow===0) ? 6 : startDow-1;
+  start.setDate(start.getDate() - pad);
+
+  let cells = '';
+  for(let i=0; i<days+pad+7; i++){
+    const d = new Date(start);
+    d.setDate(d.getDate()+i);
+    if(d > today){ cells += `<span class="cal-cell" style="visibility:hidden;"></span>`; continue; }
+    const key = localDateStr(d);
+    const mins = activityMap[key];
+    let level = 0;
+    if(mins !== undefined){
+      if(mins <= 0) level = 1;
+      else if(mins < 30) level = 1;
+      else if(mins < 60) level = 2;
+      else level = 3;
+    }
+    const label = `${d.toLocaleDateString('vi-VN')}${mins?` — ${mins} phút`:(mins===0?' — đã hoạt động':'')}`;
+    cells += `<span class="cal-cell" data-level="${level}" title="${escapeHtml(label)}"></span>`;
+  }
+  document.getElementById('activityCalendar').innerHTML = cells;
+}
+
+async function loadStudyGoal(){
+  const { data, error } = await sb.from('study_goals').select('*').eq('user_id', currentUser.id).maybeSingle();
+  if(!error && data){
+    currentStudyGoal = data;
+  } else {
+    currentStudyGoal = { weekly_hours_goal: 0, weekly_courses_goal: 0 };
+  }
+  document.getElementById('goalHoursInput').value = currentStudyGoal.weekly_hours_goal || '';
+  document.getElementById('goalCoursesInput').value = currentStudyGoal.weekly_courses_goal || '';
+}
+
+async function saveStudyGoal(){
+  const hours = Number(document.getElementById('goalHoursInput').value) || 0;
+  const courses = Number(document.getElementById('goalCoursesInput').value) || 0;
+  const msgEl = document.getElementById('goalMsg');
+  const { error } = await sb.from('study_goals').upsert({
+    user_id: currentUser.id,
+    weekly_hours_goal: hours,
+    weekly_courses_goal: courses,
+    updated_at: new Date().toISOString()
+  });
+  if(error){
+    msgEl.textContent = 'Không lưu được mục tiêu: ' + error.message;
+    msgEl.className = 'admin-msg err';
+    return;
+  }
+  currentStudyGoal = { weekly_hours_goal: hours, weekly_courses_goal: courses };
+  msgEl.textContent = 'Đã lưu mục tiêu!';
+  msgEl.className = 'admin-msg ok';
+  renderTrackStats();
+}
+
+function renderTrackStats(){
+  const activityMap = buildActivityMap();
+  const streak = computeStreak(activityMap);
+
+  const weekStart = startOfWeek(new Date());
+  const weekStartStr = localDateStr(weekStart);
+  const weekEnd = new Date(weekStart); weekEnd.setDate(weekEnd.getDate()+7);
+  const weekEndStr = localDateStr(weekEnd);
+
+  const weekMinutes = userStudySessions
+    .filter(s => s.session_date >= weekStartStr && s.session_date < weekEndStr)
+    .reduce((sum,s)=> sum + (Number(s.minutes)||0), 0);
+
+  const coursesThisWeek = new Set();
+  userStudySessions.forEach(s=>{
+    if(s.session_date >= weekStartStr && s.session_date < weekEndStr && s.course_id) coursesThisWeek.add(s.course_id);
+  });
+  userExamAttempts.forEach(a=>{
+    const d = localDateStr(new Date(a.created_at));
+    if(d >= weekStartStr && d < weekEndStr) coursesThisWeek.add(a.course_id);
+  });
+
+  const goalHours = Number(currentStudyGoal.weekly_hours_goal) || 0;
+  const goalCourses = Number(currentStudyGoal.weekly_courses_goal) || 0;
+  const weekHours = weekMinutes/60;
+  const hoursPct = goalHours>0 ? Math.min(100, Math.round((weekHours/goalHours)*100)) : 0;
+  const coursesPct = goalCourses>0 ? Math.min(100, Math.round((coursesThisWeek.size/goalCourses)*100)) : 0;
+
+  document.getElementById('trackStats').innerHTML = `
+    <div class="track-stat glass streak">
+      <span class="ts-label">Chuỗi ngày học</span>
+      <div class="ts-value">🔥 ${streak}<span class="unit">ngày liên tục</span></div>
+      <span class="ts-sub">${streak>0 ? 'Duy trì đều đặn nhé!' : 'Học hôm nay để bắt đầu chuỗi mới.'}</span>
+    </div>
+    <div class="track-stat glass">
+      <span class="ts-label">Giờ học tuần này</span>
+      <div class="ts-value">${weekHours.toFixed(1)}<span class="unit">${goalHours>0 ? '/ '+goalHours+' giờ' : 'giờ'}</span></div>
+      ${goalHours>0 ? `<div class="bar"><span style="width:${hoursPct}%"></span></div>` : `<span class="ts-sub">Chưa đặt mục tiêu giờ học.</span>`}
+    </div>
+    <div class="track-stat glass">
+      <span class="ts-label">Khoá học tuần này</span>
+      <div class="ts-value">${coursesThisWeek.size}<span class="unit">${goalCourses>0 ? '/ '+goalCourses+' khoá' : 'khoá'}</span></div>
+      ${goalCourses>0 ? `<div class="bar"><span style="width:${coursesPct}%"></span></div>` : `<span class="ts-sub">Chưa đặt mục tiêu số khoá.</span>`}
+    </div>`;
+
+  renderActivityCalendar(activityMap);
+}
+
+function courseTitleById(id){
+  const c = allCoursesLite.find(x=>x.id===id);
+  return c ? c.title : '(khoá học đã xoá)';
+}
+
+function renderScoreChart(){
+  const sel = document.getElementById('progressCourseSelect');
+  const wrap = document.getElementById('scoreChartWrap');
+  if(!sel.value){
+    wrap.innerHTML = '<p class="chart-empty">Bạn chưa làm bài trực tuyến ở khoá học nào để hiện biểu đồ.</p>';
+    return;
+  }
+  const attempts = userExamAttempts
+    .filter(a=>a.course_id===sel.value)
+    .slice()
+    .sort((a,b)=> new Date(a.created_at) - new Date(b.created_at));
+
+  if(attempts.length===0){
+    wrap.innerHTML = '<p class="chart-empty">Chưa có lần làm bài nào cho khoá học này.</p>';
+    return;
+  }
+
+  const w = 640, h = 220, padL = 36, padR = 16, padT = 16, padB = 30;
+  const innerW = w - padL - padR, innerH = h - padT - padB;
+  const pts = attempts.map((a,i)=>{
+    const pct = Math.round((a.score/a.total)*100);
+    const x = attempts.length===1 ? padL + innerW/2 : padL + (i/(attempts.length-1))*innerW;
+    const y = padT + innerH - (pct/100)*innerH;
+    return { x, y, pct, when: new Date(a.created_at).toLocaleDateString('vi-VN') };
+  });
+
+  let svg = `<svg width="100%" viewBox="0 0 ${w} ${h}" preserveAspectRatio="xMidYMid meet">`;
+  [0,50,100].forEach(v=>{
+    const y = padT + innerH - (v/100)*innerH;
+    svg += `<line x1="${padL}" y1="${y}" x2="${w-padR}" y2="${y}" stroke="rgba(16,24,40,0.09)"/>`;
+    svg += `<text x="4" y="${y+4}" font-size="10.5" fill="var(--ink-dim)" font-family="IBM Plex Mono, monospace">${v}%</text>`;
+  });
+  const linePts = pts.map(p=>`${p.x},${p.y}`).join(' ');
+  svg += `<polyline points="${linePts}" fill="none" stroke="#0D9488" stroke-width="2.5"/>`;
+  pts.forEach(p=>{
+    svg += `<circle cx="${p.x}" cy="${p.y}" r="4.5" fill="#0D9488" stroke="#FFFFFF" stroke-width="1.5"><title>${p.when} — ${p.pct}%</title></circle>`;
   });
   svg += `</svg>`;
-  document.getElementById(containerId).innerHTML = svg;
+
+  const best = Math.max(...pts.map(p=>p.pct));
+  const latest = pts[pts.length-1].pct;
+  wrap.innerHTML = svg + `
+    <div class="result-breakdown" style="justify-content:flex-start;margin-top:14px;gap:16px;">
+      <div class="rb-item glass" style="min-width:110px;padding:12px 16px;"><div class="val" style="font-size:18px;">${attempts.length}</div><div class="lbl">Lần làm bài</div></div>
+      <div class="rb-item glass" style="min-width:110px;padding:12px 16px;"><div class="val" style="font-size:18px;">${latest}%</div><div class="lbl">Lần gần nhất</div></div>
+      <div class="rb-item glass" style="min-width:110px;padding:12px 16px;"><div class="val" style="font-size:18px;">${best}%</div><div class="lbl">Cao nhất</div></div>
+    </div>`;
+}
+
+function renderCourseTimeTable(){
+  const totalsByCourse = {}; // course_id -> {minutes, attempts, last}
+  userStudySessions.forEach(s=>{
+    if(!s.course_id) return;
+    const t = totalsByCourse[s.course_id] || { minutes:0, attempts:0, last:null };
+    t.minutes += Number(s.minutes)||0;
+    if(!t.last || s.session_date > t.last) t.last = s.session_date;
+    totalsByCourse[s.course_id] = t;
+  });
+  userExamAttempts.forEach(a=>{
+    const t = totalsByCourse[a.course_id] || { minutes:0, attempts:0, last:null };
+    t.attempts += 1;
+    const d = localDateStr(new Date(a.created_at));
+    if(!t.last || d > t.last) t.last = d;
+    totalsByCourse[a.course_id] = t;
+  });
+
+  const rows = Object.keys(totalsByCourse);
+  const tableEl = document.getElementById('courseTimeTable');
+  if(rows.length===0){
+    tableEl.innerHTML = '<tr><td class="empty-note" style="border:none;">Chưa có dữ liệu học tập cho khoá học nào.</td></tr>';
+    return;
+  }
+
+  tableEl.innerHTML = `
+    <thead><tr><th>Khoá học</th><th>Thời gian đã học</th><th>Số lần làm bài</th><th>Học gần nhất</th><th></th></tr></thead>
+    <tbody>
+      ${rows.map(cid=>{
+        const t = totalsByCourse[cid];
+        const hrs = (t.minutes/60);
+        const timeLabel = t.minutes>0 ? (hrs>=1 ? hrs.toFixed(1)+' giờ' : t.minutes+' phút') : '—';
+        const lastLabel = t.last ? new Date(t.last).toLocaleDateString('vi-VN') : '—';
+        return `<tr>
+          <td>${escapeHtml(courseTitleById(cid))}</td>
+          <td>${timeLabel}</td>
+          <td>${t.attempts}</td>
+          <td>${lastLabel}</td>
+          <td><button class="btn-log" onclick="logStudySession('${cid}')">+ Ghi buổi học</button></td>
+        </tr>`;
+      }).join('')}
+    </tbody>`;
+}
+
+// Ghi nhận thủ công một buổi học (số phút) cho một khoá học cụ thể.
+async function logStudySession(courseId){
+  const input = prompt('Bạn đã học khoá này bao nhiêu phút?', '30');
+  if(input===null) return;
+  const minutes = Math.round(Number(input));
+  if(!minutes || minutes<=0){ alert('Số phút không hợp lệ.'); return; }
+
+  const { error } = await sb.from('study_sessions').insert({
+    user_id: currentUser.id,
+    course_id: courseId || null,
+    minutes,
+    source: 'manual',
+    session_date: localDateStr(new Date())
+  });
+  if(error){ alert('Không ghi được buổi học: ' + error.message); return; }
+
+  await loadTrackingData();
+  renderTrackStats();
+  renderCourseTimeTable();
+  renderScoreChart();
+}
+
+// Tải dữ liệu dùng cho theo dõi học tập: khoá học, lần làm bài, buổi học, mục tiêu.
+async function loadTrackingData(){
+  const [{ data: courses }, { data: attempts, error: attErr }, { data: sessions, error: sesErr }] = await Promise.all([
+    sb.from('courses').select('id,title'),
+    sb.from('course_exam_attempts').select('*').eq('user_id', currentUser.id),
+    sb.from('study_sessions').select('*').eq('user_id', currentUser.id)
+  ]);
+  allCoursesLite = courses || [];
+  userExamAttempts = attErr ? [] : (attempts || []);
+  userStudySessions = sesErr ? [] : (sessions || []);
+  await loadStudyGoal();
+
+  if(attErr || sesErr){
+    console.warn('Thiếu bảng study_sessions/course_exam_attempts — xem README để tạo bảng.', attErr, sesErr);
+  }
 }
 
 /* =========================================================================
@@ -1035,148 +1260,28 @@ function renderCompass(containerId, scores){
    ========================================================================= */
 async function loadDashboard(){
   const name = currentUser.user_metadata?.full_name || currentUser.email;
-  document.getElementById('dashGreeting').textContent = `Chào ${name.split(' ').pop()}, sẵn sàng luyện chưa?`;
+  document.getElementById('dashGreeting').textContent = `Chào ${name.split(' ').pop()}, cùng xem tiến độ học tập nhé.`;
   document.getElementById('dashBalance').textContent = formatVND(currentProfile?.balance);
 
-  const { data, error } = await sb
-    .from('quiz_results')
-    .select('*')
-    .eq('user_id', currentUser.id)
-    .order('created_at', { ascending: false });
+  await loadTrackingData();
+  renderTrackStats();
 
-  latestScores = { ngonngu:null, toanlogic:null, giaiquyetvandề:null };
-  const bestByCategory = {};
-  if(!error && data){
-    data.forEach(row=>{
-      const pct = Math.round((row.score/row.total)*100);
-      if(bestByCategory[row.category]===undefined) bestByCategory[row.category] = [];
-      bestByCategory[row.category].push(pct);
-    });
-    Object.keys(bestByCategory).forEach(k=>{
-      const arr = bestByCategory[k];
-      latestScores[k] = Math.round(arr.reduce((a,b)=>a+b,0)/arr.length);
-    });
-  }
-
-  renderCompass('dashCompass', latestScores);
-
-  const histEl = document.getElementById('historyList');
-  if(!data || data.length===0){
-    histEl.innerHTML = '<p class="empty-note">Chưa có lượt luyện nào. Bắt đầu bên dưới nhé.</p>';
+  // Danh sách khoá học có ít nhất 1 lần làm bài, để chọn xem biểu đồ tiến bộ
+  const courseIdsWithAttempts = [...new Set(userExamAttempts.map(a=>a.course_id))];
+  const selectEl = document.getElementById('progressCourseSelect');
+  if(courseIdsWithAttempts.length===0){
+    selectEl.innerHTML = '';
+    selectEl.classList.add('hidden');
   } else {
-    histEl.innerHTML = data.slice(0,8).map(row=>{
-      const cat = CATEGORIES.find(c=>c.key===row.category);
-      const when = new Date(row.created_at).toLocaleDateString('vi-VN');
-      return `<div class="history-row">
-        <span class="cat">${cat ? cat.label : row.category}</span>
-        <span>${row.score}/${row.total}</span>
-        <span class="when">${when}</span>
-      </div>`;
-    }).join('');
+    selectEl.classList.remove('hidden');
+    selectEl.innerHTML = courseIdsWithAttempts.map(cid=>
+      `<option value="${cid}">${escapeHtml(courseTitleById(cid))}</option>`
+    ).join('');
   }
+  renderScoreChart();
+  renderCourseTimeTable();
 
-  document.getElementById('catGrid').innerHTML = CATEGORIES.map(c=>{
-    const score = latestScores[c.key];
-    const pct = score ?? 0;
-    return `<div class="cat-card glass">
-      <span class="tag">${QUESTION_BANK[c.key].length} câu mẫu</span>
-      <h3>${c.label}</h3>
-      <p>${c.desc}</p>
-      <div class="score-line"><span>Điểm trung bình</span><span class="val">${score!==null ? score+'%' : '—'}</span></div>
-      <div class="bar"><span style="width:${pct}%"></span></div>
-      <button onclick="startQuiz('${c.key}')">Bắt đầu luyện</button>
-    </div>`;
-  }).join('');
-
-  renderCompass('landingCompass', latestScores);
   showView('dashboard');
-}
-
-/* =========================================================================
-   8. QUIZ FLOW
-   ========================================================================= */
-function startQuiz(catKey){
-  const qs = [...QUESTION_BANK[catKey]];
-  currentQuiz = { catKey, questions: qs, index: 0, answers: [], selectedIdx: null, locked: false };
-  showView('quiz');
-  renderQuestion();
-}
-
-function renderQuestion(){
-  const { catKey, questions, index } = currentQuiz;
-  const cat = CATEGORIES.find(c=>c.key===catKey);
-  const q = questions[index];
-  document.getElementById('quizCatBadge').textContent = cat.label;
-  document.getElementById('qCount').textContent = `${index+1} / ${questions.length}`;
-  document.getElementById('quizProgress').style.width = `${(index/questions.length)*100}%`;
-  document.getElementById('quizQuestion').textContent = q.q;
-  document.getElementById('quizExplain').classList.add('hidden');
-  document.getElementById('btnNext').disabled = true;
-  document.getElementById('btnNext').textContent = (index === questions.length-1) ? 'Xem kết quả' : 'Câu tiếp theo';
-  currentQuiz.selectedIdx = null;
-  currentQuiz.locked = false;
-
-  const optsEl = document.getElementById('quizOptions');
-  optsEl.innerHTML = q.opts.map((opt,i)=>
-    `<button class="opt" onclick="selectOption(${i})">${escapeHtml(opt)}</button>`
-  ).join('');
-}
-
-function selectOption(i){
-  if(currentQuiz.locked) return;
-  currentQuiz.locked = true;
-  currentQuiz.selectedIdx = i;
-  const q = currentQuiz.questions[currentQuiz.index];
-  const buttons = document.querySelectorAll('#quizOptions .opt');
-  buttons.forEach((b,idx)=>{
-    b.disabled = true;
-    b.classList.remove('selected');
-    if(idx === q.correct) b.classList.add('correct');
-    if(idx === i && i !== q.correct) b.classList.add('wrong');
-  });
-  document.getElementById('quizExplain').textContent = q.explain;
-  document.getElementById('quizExplain').classList.remove('hidden');
-  document.getElementById('btnNext').disabled = false;
-
-  currentQuiz.answers[currentQuiz.index] = (i === q.correct) ? 1 : 0;
-}
-
-function nextQuestion(){
-  if(currentQuiz.index < currentQuiz.questions.length - 1){
-    currentQuiz.index++;
-    renderQuestion();
-  } else {
-    finishQuiz();
-  }
-}
-
-function exitQuiz(){
-  currentQuiz = null;
-  showView('dashboard');
-}
-
-async function finishQuiz(){
-  const { catKey, questions, answers } = currentQuiz;
-  const score = answers.reduce((a,b)=>a+b,0);
-  const total = questions.length;
-  const cat = CATEGORIES.find(c=>c.key===catKey);
-
-  document.getElementById('resultScore').textContent = `${score}/${total}`;
-  document.getElementById('resultNote').textContent = `Nhóm: ${cat.label}`;
-  document.getElementById('resultBreakdown').innerHTML = `
-    <div class="rb-item glass"><div class="val">${Math.round((score/total)*100)}%</div><div class="lbl">Độ chính xác</div></div>
-    <div class="rb-item glass"><div class="val">${total}</div><div class="lbl">Câu đã làm</div></div>
-  `;
-
-  if(currentUser){
-    await sb.from('quiz_results').insert({
-      user_id: currentUser.id,
-      category: catKey,
-      score, total,
-    });
-  }
-
-  showView('result');
 }
 
 function backToDashboard(){
@@ -1197,7 +1302,7 @@ async function loadAdminDashboard(){
 
   const [{ data: profiles, error }, { data: results }] = await Promise.all([
     sb.from('profiles').select('*').order('full_name', { ascending: true }),
-    sb.from('quiz_results').select('user_id')
+    sb.from('course_exam_attempts').select('user_id')
   ]);
 
   if(error){
@@ -1662,7 +1767,10 @@ async function loadCoursesView(){
     const bodyHtml = owned
       ? `<div class="cb-files">${filesHtml || '<span class="empty-note">Chưa có link tài liệu.</span>'}</div>
          ${hasAnswerKey ? `<button class="btn-buy" style="margin-top:8px;" onclick="startCourseExam('${c.id}')">📝 Làm bài trực tuyến</button>` : ''}
-         <button class="btn-mini save" onclick="openCourseAnswers('${c.id}')">Xem đáp án</button>`
+         <div class="row-actions">
+           <button class="btn-mini save" onclick="openCourseAnswers('${c.id}')">Xem đáp án</button>
+           <button class="btn-mini" onclick="logStudySession('${c.id}')">⏱ Ghi buổi học</button>
+         </div>`
       : `<button class="btn-buy" onclick="purchaseCourse('${c.id}', ${price}, '${escapeHtml(c.title).replace(/'/g,"\\'")}')">Mua khoá học</button>`;
 
     return `<div class="course-browse-card glass">
@@ -1832,6 +1940,7 @@ function startCourseExam(courseId){
   }
   currentExamCourse = course;
   examExitCount = 0;
+  examStartTime = Date.now();
   document.getElementById('examTakeTitle').textContent = course.title;
   document.getElementById('examExitNote').textContent = '';
   document.getElementById('examTakeMsg').textContent = '';
@@ -1848,6 +1957,7 @@ function startCourseExam(courseId){
 function exitExamTake(){
   if(!confirm('Thoát mà không nộp bài? Kết quả sẽ không được lưu.')) return;
   currentExamCourse = null;
+  examStartTime = null;
   showView('courses');
 }
 
@@ -1865,6 +1975,7 @@ async function submitExamAttempt(){
   const total = VACT_TOTAL_QUESTIONS;
   const finishedCourse = currentExamCourse;
   const finishedExitCount = examExitCount;
+  const elapsedMinutes = examStartTime ? Math.max(1, Math.round((Date.now()-examStartTime)/60000)) : null;
 
   msgEl.textContent = 'Đang nộp bài…';
   msgEl.className = 'admin-msg';
@@ -1883,6 +1994,17 @@ async function submitExamAttempt(){
     return;
   }
 
+  // Tự động ghi nhận thời gian làm bài vào lịch sử theo dõi học tập (không chặn nếu lỗi).
+  if(elapsedMinutes){
+    sb.from('study_sessions').insert({
+      user_id: currentUser.id,
+      course_id: finishedCourse.id,
+      minutes: elapsedMinutes,
+      source: 'exam',
+      session_date: localDateStr(new Date())
+    }).then(({error:seErr})=>{ if(seErr) console.warn('Không ghi được study_sessions:', seErr); });
+  }
+
   document.getElementById('resultScore').textContent = `${score}/${total}`;
   document.getElementById('resultNote').textContent =
     `Khoá học: ${finishedCourse.title}` + (finishedExitCount>0 ? ` · Đã thoát trang ${finishedExitCount} lần` : '');
@@ -1892,6 +2014,7 @@ async function submitExamAttempt(){
     <div class="rb-item glass"><div class="val">${finishedExitCount}</div><div class="lbl">Số lần thoát trang</div></div>
   `;
   currentExamCourse = null;
+  examStartTime = null;
   showView('result');
 }
 
@@ -1911,7 +2034,6 @@ async function handleAuthNav(user){
   if(currentUser){
     loadDashboard();
   } else {
-    renderCompass('landingCompass', {});
     showView('landing');
   }
   lastNavUserId = user?.id || null;
