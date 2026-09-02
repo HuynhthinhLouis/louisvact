@@ -491,6 +491,19 @@
   @media (prefers-reduced-motion: reduce){
     nav, button, .pill, .glass, .bar span, .track-stat, .course-browse-card{ animation:none !important; transition:none !important; }
   }
+
+  /* ---------- VIDEO TUTORIAL (nhúng ngay trong trang, không phải popup) ---------- */
+  .video-panel{padding:22px;margin-bottom:28px;}
+  .video-panel h3{font-size:16px;color:var(--ink);margin-bottom:4px;}
+  .video-panel .panel-sub{font-size:12.5px;color:var(--ink-dim);margin-bottom:16px;}
+  .video-panel-body{
+    position:relative;width:100%;aspect-ratio:16/9;
+    border-radius:12px;overflow:hidden;background:#000;
+    border:1px solid var(--border);
+  }
+  .video-panel-body iframe{
+    position:absolute;inset:0;width:100%;height:100%;border:none;
+  }
 </style>
 </head>
 <body>
@@ -512,6 +525,13 @@
 
   <!-- ===================== LANDING (logged out) ===================== -->
   <section id="view-landing" class="hidden">
+    <div class="video-panel glass">
+      <h3>🎬 Video hướng dẫn sử dụng</h3>
+      <div class="panel-sub">Xem nhanh cách sử dụng Trạm ĐGNL trước khi bắt đầu.</div>
+      <div class="video-panel-body">
+        <iframe src="https://drive.google.com/file/d/1RMm05tZOjBw9IBtqHC-GCECjGWhaMtNI/preview" allow="autoplay" allowfullscreen title="Video hướng dẫn sử dụng Trạm ĐGNL"></iframe>
+      </div>
+    </div>
     <div class="hero">
       <div>
         <span class="eyebrow">Ôn luyện Đánh giá năng lực · ĐHQG-HCM</span>
@@ -563,6 +583,13 @@
 
   <!-- ===================== DASHBOARD (logged in) ===================== -->
   <section id="view-dashboard" class="hidden">
+    <div class="video-panel glass">
+      <h3>🎬 Video hướng dẫn sử dụng</h3>
+      <div class="panel-sub">Xem nhanh cách sử dụng Trạm ĐGNL.</div>
+      <div class="video-panel-body">
+        <iframe src="https://drive.google.com/file/d/1RMm05tZOjBw9IBtqHC-GCECjGWhaMtNI/preview" allow="autoplay" allowfullscreen title="Video hướng dẫn sử dụng Trạm ĐGNL"></iframe>
+      </div>
+    </div>
     <div class="dash-head">
       <span class="eyebrow">Bảng điều khiển</span>
       <h2 id="dashGreeting">Chào bạn</h2>
@@ -804,7 +831,22 @@ const SUPABASE_ANON_KEY = "sb_publishable_XIPWiwyP5a6X4UibCKSq5A_yrof0z0g";
 
 // LƯU Ý: thư viện CDN gắn sẵn biến toàn cục "supabase" vào window,
 // nên client của chúng ta phải đặt tên khác (sb) để tránh trùng tên.
-const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+//
+// Các tuỳ chọn dưới đây giúp phiên đăng nhập được LƯU LẠI và TỰ ĐỘNG khôi phục:
+// - persistSession: lưu phiên vào localStorage của trình duyệt, nên tắt tab/tắt
+//   trình duyệt rồi mở lại vẫn còn đăng nhập, không cần nhập lại email/mật khẩu.
+// - autoRefreshToken: tự động làm mới access token trước khi hết hạn, nên người
+//   dùng không bao giờ bị "văng" ra chỉ vì token hết hạn khi đang dùng trang.
+// - detectSessionInUrl: false vì trang không dùng luồng đăng nhập qua link email.
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+  auth: {
+    persistSession: true,
+    autoRefreshToken: true,
+    detectSessionInUrl: false,
+    storage: window.localStorage,
+    storageKey: 'tramdgnl-auth'
+  }
+});
 
 // Client phụ, KHÔNG lưu phiên đăng nhập — dùng riêng khi admin tạo tài khoản mới,
 // để tránh việc sb.auth.signUp() ghi đè phiên đăng nhập hiện tại của admin.
