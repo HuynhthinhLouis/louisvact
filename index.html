@@ -415,6 +415,9 @@
     .split-view-3 .split-pane:nth-child(3){grid-column:1/-1;}}
   @media (max-width:920px){.split-view-3{grid-template-columns:1fr;}
     .split-view-3 .split-pane:nth-child(3){grid-column:auto;}}
+  /* Xem lại bài làm: bỏ khung file đề, chỉ còn bài làm + file đáp án (to hơn) */
+  .review-split-2{grid-template-columns:0.85fr 1.3fr;}
+  @media (max-width:920px){.review-split-2{grid-template-columns:1fr;}}
 
   /* ---------- ĐỒNG HỒ ĐẾM NGƯỢC LÀM BÀI ---------- */
   .exam-timer{
@@ -809,11 +812,7 @@
         <h2 style="font-size:26px;" id="examReviewTitle">Đề thi</h2>
         <div class="review-summary" id="examReviewSummary"></div>
       </div>
-      <div class="split-view split-view-3">
-        <div class="split-pane">
-          <h4>📄 File đề</h4>
-          <div id="reviewExamPdfPanel"></div>
-        </div>
+      <div class="split-view review-split-2">
         <div class="split-pane">
           <h4>📝 Bài làm của bạn</h4>
           <div class="split-scroll">
@@ -2388,7 +2387,6 @@ function showExamReview(course, studentAnswers, returnView){
   document.getElementById('examReviewTitle').textContent = course.title;
   document.getElementById('reviewOnlyWrong').checked = false;
   document.getElementById('reviewOnlyFlagged').checked = false;
-  renderPdfPanel('reviewExamPdfPanel', getExamMaterials(course), 'Khoá học này chưa có file đề PDF.');
   renderPdfPanel('reviewAnswerPdfPanel', getAnswerMaterials(course), 'Khoá học này chưa có file đáp án PDF. Vui lòng liên hệ giáo viên để được bổ sung.');
   renderExamReviewList();
   showView('examreview');
