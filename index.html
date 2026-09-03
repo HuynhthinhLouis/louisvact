@@ -325,6 +325,32 @@
   .answer-cell select.unfilled{border-color:rgba(220,38,38,0.55);}
   .answer-key-progress{font-family:'IBM Plex Mono',monospace;font-size:12.5px;color:var(--ink-soft);margin-top:14px;}
   .answer-key-progress b{color:var(--gold);}
+  .answer-cell{position:relative;}
+  .answer-cell .cell-head{display:flex;flex-direction:column;align-items:center;gap:4px;}
+  .expl-toggle{border:none;background:none;color:var(--ink-dim);font-size:11px;cursor:pointer;padding:0;line-height:1;}
+  .expl-toggle:hover{color:var(--gold);}
+  .expl-toggle.has-text{color:var(--teal);}
+  .answer-cell.expanded{
+    grid-column:1/-1;background:rgba(16,24,40,0.03);border:1px solid var(--border-hi);
+    border-radius:12px;padding:12px;flex-direction:row;align-items:flex-start;gap:16px;
+  }
+  .answer-cell.expanded .cell-head{flex-direction:row;gap:8px;flex:0 0 auto;padding-top:4px;}
+  .expl-wrap{flex:1;min-width:0;}
+  .expl-toolbar{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:6px;}
+  .expl-toolbar button{
+    border:1px solid var(--border);background:#FFFFFF;color:var(--ink-soft);border-radius:6px;
+    font-size:11px;padding:5px 9px;cursor:pointer;line-height:1;font-family:inherit;
+  }
+  .expl-toolbar button:hover{border-color:var(--teal);color:var(--teal);}
+  .expl-box{
+    width:100%;min-height:70px;max-height:280px;overflow-y:auto;resize:vertical;
+    padding:9px 11px;border-radius:9px;border:1px solid var(--border);
+    background:#FFFFFF;color:var(--ink);font-family:'Inter',sans-serif;font-size:12.5px;line-height:1.65;
+  }
+  .expl-box:focus{outline:none;border-color:var(--teal);box-shadow:0 0 0 3px rgba(13,148,136,0.12);}
+  .expl-box:empty:before{content:attr(data-placeholder);color:var(--ink-dim);}
+  .expl-box img{max-width:240px;max-height:180px;border-radius:8px;display:block;margin:6px 0;}
+  .expl-box ul, .expl-box ol{margin:4px 0 4px 18px;padding:0;}
   .course-form-actions{display:flex;gap:10px;align-items:center;margin-top:20px;}
   .btn-cancel-edit{padding:11px 18px;border-radius:10px;border:1px solid var(--border-hi);background:transparent;color:var(--ink-soft);font-weight:600;font-size:13.5px;}
   .btn-cancel-edit:hover{color:var(--ink);}
@@ -393,6 +419,39 @@
   .pdf-fallback{padding:40px 20px;text-align:center;color:var(--ink-soft);font-size:13.5px;}
   .pdf-fallback a{color:var(--teal);font-weight:600;}
   .split-scroll{max-height:82vh;overflow-y:auto;padding-right:4px;}
+
+  /* ---------- XEM LẠI BÀI LÀM (đúng/sai + giải thích) ---------- */
+  .review-summary{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:16px;}
+  .review-summary .rb-item{min-width:110px;padding:14px 18px;}
+  .review-filter{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--ink-soft);margin-bottom:14px;}
+  .review-filter input{width:16px;height:16px;}
+  .review-item{
+    border:1px solid var(--border);border-radius:12px;padding:12px 14px;margin-bottom:10px;
+    background:rgba(16,24,40,0.02);
+  }
+  .review-item.correct{border-color:rgba(13,148,136,0.35);background:rgba(13,148,136,0.05);}
+  .review-item.wrong{border-color:rgba(220,38,38,0.35);background:rgba(220,38,38,0.045);}
+  .review-item.blank{border-color:rgba(217,119,6,0.35);background:rgba(217,119,6,0.05);}
+  .review-item .ri-head{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;}
+  .review-item .ri-qno{font-family:'IBM Plex Mono',monospace;font-weight:700;font-size:13px;color:var(--ink);}
+  .review-item .ri-badge{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;padding:3px 9px;border-radius:999px;}
+  .review-item.correct .ri-badge{background:rgba(13,148,136,0.15);color:var(--teal);}
+  .review-item.wrong .ri-badge{background:rgba(220,38,38,0.13);color:var(--coral);}
+  .review-item.blank .ri-badge{background:rgba(217,119,6,0.15);color:#D97706;}
+  .review-item .ri-answers{font-family:'IBM Plex Mono',monospace;font-size:12.5px;color:var(--ink-soft);margin-top:6px;}
+  .review-item .ri-answers b{color:var(--ink);}
+  .review-item .ri-answers .ok{color:var(--teal);font-weight:700;}
+  .review-item .ri-answers .bad{color:var(--coral);font-weight:700;}
+  .review-item .ri-expl{font-size:12.5px;color:var(--ink-soft);margin-top:8px;line-height:1.55;padding-top:8px;border-top:1px dashed var(--border);}
+  .review-item .ri-expl b{color:var(--ink);}
+  .review-item .ri-expl img{max-width:100%;max-height:320px;border-radius:8px;display:block;margin-top:6px;}
+  .review-item .ri-expl ul, .review-item .ri-expl ol{margin:4px 0 4px 18px;padding:0;}
+  .attempt-history{display:flex;flex-direction:column;gap:8px;margin-top:14px;}
+  .attempt-history-row{
+    display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;
+    padding:9px 14px;border-radius:10px;border:1px solid var(--border);background:rgba(16,24,40,0.02);font-size:12.5px;color:var(--ink-soft);
+  }
+  .attempt-history-row b{color:var(--ink);}
 
   footer{border-top:1px solid var(--border);padding:26px 40px;text-align:center;font-size:12.5px;color:var(--ink-dim);}
   footer b{color:var(--ink-soft);}
@@ -628,6 +687,7 @@
       <div class="panel-sub">Chọn một khoá học để xem điểm số qua các lần làm bài.</div>
       <select class="course-select" id="progressCourseSelect" onchange="renderScoreChart()"></select>
       <div id="scoreChartWrap"></div>
+      <div class="attempt-history" id="attemptHistoryList"></div>
     </div>
 
     <div class="track-panel glass">
@@ -646,7 +706,10 @@
       <div class="result-score" id="resultScore">0/5</div>
       <p id="resultNote"></p>
       <div class="result-breakdown" id="resultBreakdown"></div>
-      <button class="btn-next" onclick="backToDashboard()">Về bảng điều khiển</button>
+      <div class="course-form-actions" style="justify-content:center;">
+        <button class="btn-next" id="btnReviewLastAttempt" onclick="reviewLastAttempt()">🔍 Xem lại đáp án chi tiết</button>
+        <button class="btn-cancel-edit" onclick="backToDashboard()">Về bảng điều khiển</button>
+      </div>
     </div>
   </section>
 
@@ -721,6 +784,33 @@
     </div>
   </section>
 
+  <!-- ===================== XEM LẠI BÀI LÀM (đúng/sai + giải thích) ===================== -->
+  <section id="view-examreview" class="hidden">
+    <div class="courses-wrap">
+      <div class="courses-head">
+        <span class="eyebrow">Xem lại bài làm</span>
+        <h2 style="font-size:26px;" id="examReviewTitle">Đề thi</h2>
+        <div class="review-summary" id="examReviewSummary"></div>
+      </div>
+      <div class="split-view">
+        <div class="split-pane">
+          <h4>📄 File đáp án</h4>
+          <div id="reviewPdfPanel"></div>
+        </div>
+        <div class="split-pane">
+          <h4>📝 Chi tiết từng câu</h4>
+          <div class="split-scroll">
+            <label class="review-filter"><input type="checkbox" id="reviewOnlyWrong" onchange="renderExamReviewList()"> Chỉ hiện những câu làm sai / bỏ trống</label>
+            <div id="examReviewList"></div>
+            <div class="course-form-actions">
+              <button class="btn-cancel-edit" onclick="exitExamReview()">Quay lại</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- ===================== ADMIN DASHBOARD ===================== -->
   <section id="view-admin" class="hidden">
     <div class="admin-wrap">
@@ -769,15 +859,15 @@
         </div>
 
         <div class="field file-input-wrap" style="margin-top:6px;">
-          <label>Link Google Drive đề thi PDF</label>
+          <label>Link Google Drive tài liệu PDF</label>
           <div id="materialInputs"></div>
           <button type="button" class="btn-mini save" onclick="addMaterialRow()" style="margin-top:4px;">+ Thêm link</button>
-          <div class="file-hint">Dán link chia sẻ Google Drive của file PDF (nhớ đặt chế độ chia sẻ "Bất kỳ ai có link" để học viên xem được). Khi sửa khoá học, các link mới thêm sẽ được cộng vào, không thay thế link cũ — xoá link cũ ở danh sách khoá học bên dưới.</div>
+          <div class="file-hint">Dán link chia sẻ Google Drive của file PDF (nhớ đặt chế độ chia sẻ "Bất kỳ ai có link" để học viên xem được). Chọn đúng "Loại file": <b>Đề thi</b> sẽ hiện khi học viên làm bài trực tuyến, <b>Đáp án</b> sẽ hiện khi học viên bấm "Xem đáp án" hoặc "Xem lại bài làm". Khi sửa khoá học, các link mới thêm sẽ được cộng vào, không thay thế link cũ — xoá link cũ ở danh sách khoá học bên dưới.</div>
         </div>
 
         <div class="answer-key-wrap">
           <h4>Đáp án đúng — 120 câu</h4>
-          <div class="answer-key-hint">Chọn đáp án A/B/C/D cho từng câu, chia theo các phần của kỳ thi.</div>
+          <div class="answer-key-hint">Chọn đáp án A/B/C/D cho từng câu, chia theo các phần của kỳ thi. Bấm "💬" dưới mỗi câu để nhập giải thích (hiện khi học viên xem lại bài làm sai/đúng). Có thể chèn ảnh minh hoạ bằng cách dán link chia sẻ Google Drive của ảnh đó (nhớ để chế độ "Bất kỳ ai có link" là người xem).</div>
           <div id="answerKeyGrid"></div>
           <div class="answer-key-progress" id="answerKeyProgress"></div>
         </div>
@@ -879,8 +969,11 @@ let userExamAttempts = [];    // course_exam_attempts của user hiện tại
 let userStudySessions = [];   // study_sessions của user hiện tại
 let currentStudyGoal = { weekly_hours_goal: 0, weekly_courses_goal: 0 };
 let editingCourseId = null; // null = đang tạo mới, có giá trị = đang sửa khoá học này
-let materialDraftRows = []; // các link Google Drive MỚI sẽ thêm khi lưu khoá học: [{label, link}]
+let materialDraftRows = []; // các link Google Drive MỚI sẽ thêm khi lưu khoá học: [{label, link, type}] — type: 'de' | 'dapan'
 let coursesCache = []; // cache danh sách khoá học cho học viên (dùng khi bấm "Làm bài")
+let lastAttemptCourse = null;   // khoá học vừa nộp bài, dùng để mở màn "Xem lại đáp án chi tiết"
+let lastAttemptAnswers = null;  // bài làm của học viên vừa nộp
+let examReviewData = null;      // {course, studentAnswers, returnView} đang hiển thị ở màn xem lại
 
 // --- Làm bài trực tuyến + đếm số lần thoát tab ---
 let currentExamCourse = null;
@@ -998,7 +1091,7 @@ function openCourses(){
 }
 
 function showView(name){
-  ['landing','dashboard','result','admin','courses','examtake','viewanswers'].forEach(v=>{
+  ['landing','dashboard','result','admin','courses','examtake','viewanswers','examreview'].forEach(v=>{
     const el = document.getElementById('view-'+v);
     const active = v===name;
     el.classList.toggle('hidden', !active);
@@ -1229,6 +1322,19 @@ function renderScoreChart(){
       <div class="rb-item glass" style="min-width:110px;padding:12px 16px;"><div class="val" style="font-size:18px;">${latest}%</div><div class="lbl">Lần gần nhất</div></div>
       <div class="rb-item glass" style="min-width:110px;padding:12px 16px;"><div class="val" style="font-size:18px;">${best}%</div><div class="lbl">Cao nhất</div></div>
     </div>`;
+
+  // Danh sách từng lần làm bài, mới nhất trước, kèm nút xem lại đúng/sai chi tiết.
+  const historyEl = document.getElementById('attemptHistoryList');
+  if(historyEl){
+    historyEl.innerHTML = attempts.slice().reverse().map(a=>{
+      const pct = Math.round((a.score/a.total)*100);
+      const when = new Date(a.created_at).toLocaleString('vi-VN');
+      return `<div class="attempt-history-row">
+        <span>${when} — <b>${a.score}/${a.total}</b> (${pct}%)</span>
+        <button class="btn-mini save" onclick="reviewPastAttempt('${a.id}')">🔍 Xem lại</button>
+      </div>`;
+    }).join('');
+  }
 }
 
 function renderCourseTimeTable(){
@@ -1505,19 +1611,37 @@ function getCourseAnswerKey(course){
 // existingAnswers (tuỳ chọn): mảng [{no, section, answer}] để điền sẵn khi sửa khoá học.
 function renderAnswerKeyGrid(existingAnswers){
   const answerMap = {};
-  (existingAnswers||[]).forEach(a=>{ answerMap[a.no] = a.answer; });
+  const explMap = {};
+  (existingAnswers||[]).forEach(a=>{ answerMap[a.no] = a.answer; explMap[a.no] = a.explanation || ''; });
 
   let qNo = 0;
   const html = VACT_SECTIONS.map(sec=>{
     const cells = Array.from({length: sec.count}).map(()=>{
       qNo++;
       const current = answerMap[qNo] || '';
+      const expl = explMap[qNo] || '';
+      const hasContent = explHasContent(expl);
       const opts = ['','A','B','C','D'].map(letter=>
         `<option value="${letter}" ${letter===current?'selected':''}>${letter||'—'}</option>`
       ).join('');
-      return `<div class="answer-cell">
-        <span class="qno">C${qNo}</span>
-        <select id="ans-${qNo}" data-section="${sec.key}" onchange="updateAnswerKeyProgress()">${opts}</select>
+      return `<div class="answer-cell ${hasContent?'expanded':''}" id="cell-${qNo}">
+        <div class="cell-head">
+          <span class="qno">C${qNo}</span>
+          <select id="ans-${qNo}" data-section="${sec.key}" onchange="updateAnswerKeyProgress()">${opts}</select>
+          <button type="button" class="expl-toggle ${hasContent?'has-text':''}" id="expl-toggle-${qNo}" onclick="toggleExplBox(${qNo})" title="Thêm giải thích/hình ảnh cho câu này">💬</button>
+        </div>
+        <div class="expl-wrap ${hasContent?'':'hidden'}" id="expl-wrap-${qNo}">
+          <div class="expl-toolbar">
+            <button type="button" onmousedown="event.preventDefault()" onclick="explExec(${qNo},'bold')" title="In đậm"><b>B</b></button>
+            <button type="button" onmousedown="event.preventDefault()" onclick="explExec(${qNo},'italic')" title="In nghiêng"><i>I</i></button>
+            <button type="button" onmousedown="event.preventDefault()" onclick="explExec(${qNo},'underline')" title="Gạch chân"><u>U</u></button>
+            <button type="button" onmousedown="event.preventDefault()" onclick="explExec(${qNo},'insertUnorderedList')" title="Danh sách gạch đầu dòng">• List</button>
+            <button type="button" onmousedown="event.preventDefault()" onclick="explExec(${qNo},'insertOrderedList')" title="Danh sách đánh số">1. List</button>
+            <button type="button" onmousedown="event.preventDefault()" onclick="explInsertImageFromDrive(${qNo})" title="Chèn ảnh từ link Google Drive">🖼️ Ảnh Drive</button>
+            <button type="button" onmousedown="event.preventDefault()" onclick="explExec(${qNo},'removeFormat')" title="Xoá định dạng">Xoá đ.dạng</button>
+          </div>
+          <div class="expl-box" contenteditable="true" id="expl-${qNo}" data-placeholder="Giải thích đáp án câu ${qNo} (tuỳ chọn) — nhập chữ hoặc chèn hình..." oninput="onExplInput(${qNo})">${expl}</div>
+        </div>
       </div>`;
     }).join('');
     return `<div class="section-block">
@@ -1528,6 +1652,62 @@ function renderAnswerKeyGrid(existingAnswers){
 
   document.getElementById('answerKeyGrid').innerHTML = html;
   updateAnswerKeyProgress();
+}
+
+// Bấm 💬 để hiện/ẩn khung soạn giải thích (mặc định ẩn để lưới 120 câu gọn gàng).
+// Khi mở, ô đó giãn ra chiếm trọn chiều ngang để đủ chỗ cho toolbar + ảnh.
+function toggleExplBox(no){
+  const wrap = document.getElementById('expl-wrap-'+no);
+  const cell = document.getElementById('cell-'+no);
+  if(!wrap || !cell) return;
+  wrap.classList.toggle('hidden');
+  cell.classList.toggle('expanded', !wrap.classList.contains('hidden'));
+  if(!wrap.classList.contains('hidden')) document.getElementById('expl-'+no).focus();
+}
+
+// Coi ô giải thích là "có nội dung" nếu có chữ hoặc có ít nhất 1 hình ảnh.
+function explHasContent(html){
+  if(!html) return false;
+  const textOnly = html.replace(/<[^>]*>/g,'').trim();
+  return !!(textOnly || /<img[\s>]/i.test(html));
+}
+
+function onExplInput(no){
+  const box = document.getElementById('expl-'+no);
+  const btn = document.getElementById('expl-toggle-'+no);
+  if(btn) btn.classList.toggle('has-text', explHasContent(box ? box.innerHTML : ''));
+}
+
+// Thực thi lệnh định dạng (đậm/nghiêng/gạch chân/danh sách...) trên đúng ô giải thích.
+function explExec(no, cmd, value){
+  const editor = document.getElementById('expl-'+no);
+  if(!editor) return;
+  editor.focus();
+  document.execCommand(cmd, false, value || null);
+  onExplInput(no);
+}
+
+// Chuyển link chia sẻ Google Drive của 1 ảnh thành URL có thể nhúng trực tiếp bằng thẻ <img>.
+// Yêu cầu file ảnh trên Drive đã để chế độ chia sẻ "Bất kỳ ai có link" (người xem).
+function driveImageUrl(link){
+  if(!link) return null;
+  const m = link.match(/\/d\/([a-zA-Z0-9_-]+)/) || link.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+  if(m) return `https://lh3.googleusercontent.com/d/${m[1]}`;
+  return null;
+}
+
+function explInsertImageFromDrive(no){
+  const link = prompt('Dán link chia sẻ Google Drive của ảnh (nhớ để chế độ chia sẻ "Bất kỳ ai có link" là người xem):');
+  if(!link || !link.trim()) return;
+  const url = driveImageUrl(link.trim());
+  if(!url){
+    alert('Không nhận diện được link Google Drive này. Vui lòng dán đúng link chia sẻ ảnh (dạng .../d/FILE_ID/... hoặc ...?id=FILE_ID).');
+    return;
+  }
+  const editor = document.getElementById('expl-'+no);
+  editor.focus();
+  document.execCommand('insertHTML', false, `<img src="${url}" alt="">`);
+  onExplInput(no);
 }
 
 function updateAnswerKeyProgress(){
@@ -1543,7 +1723,8 @@ function updateAnswerKeyProgress(){
   return filled;
 }
 
-// Đọc toàn bộ đáp án đã chọn trong lưới -> mảng [{no, section, answer}]
+// Đọc toàn bộ đáp án đã chọn trong lưới -> mảng [{no, section, answer, explanation}]
+// explanation là chuỗi HTML (có thể chứa <b>/<i>/<u>/<ul>/<img>...) do trình soạn thảo tạo ra.
 function collectAnswerKeyFromGrid(){
   const result = [];
   let qNo = 0;
@@ -1551,7 +1732,9 @@ function collectAnswerKeyFromGrid(){
     for(let i=0;i<sec.count;i++){
       qNo++;
       const sel = document.getElementById('ans-'+qNo);
-      result.push({ no: qNo, section: sec.key, answer: sel ? sel.value : '' });
+      const explBox = document.getElementById('expl-'+qNo);
+      const explHtml = explBox ? explBox.innerHTML : '';
+      result.push({ no: qNo, section: sec.key, answer: sel ? sel.value : '', explanation: explHasContent(explHtml) ? explHtml : '' });
     }
   });
   return result;
@@ -1566,7 +1749,7 @@ function resetCourseForm(){
   document.getElementById('btnCancelCourseEdit').classList.add('hidden');
   setCourseFormMsg('', true);
   renderAnswerKeyGrid();
-  materialDraftRows = [{ label:'', link:'' }];
+  materialDraftRows = [{ label:'', link:'', type:'de' }];
   renderMaterialRows();
 }
 
@@ -1574,23 +1757,27 @@ function resetCourseForm(){
 function renderMaterialRows(){
   const wrap = document.getElementById('materialInputs');
   wrap.innerHTML = materialDraftRows.map((row,i)=>`
-    <div class="material-row" style="display:flex;gap:8px;margin-bottom:8px;">
+    <div class="material-row" style="display:flex;gap:8px;margin-bottom:8px;flex-wrap:wrap;">
       <input type="text" placeholder="Tên tài liệu (VD: Đề thi số 1)" value="${escapeHtml(row.label)}"
-        oninput="materialDraftRows[${i}].label=this.value" style="flex:0 0 40%;padding:11px 13px;border:1px solid var(--border);border-radius:10px;background:rgba(16,24,40,0.03);color:var(--ink);font-family:inherit;font-size:14px;">
+        oninput="materialDraftRows[${i}].label=this.value" style="flex:0 0 32%;padding:11px 13px;border:1px solid var(--border);border-radius:10px;background:rgba(16,24,40,0.03);color:var(--ink);font-family:inherit;font-size:14px;">
       <input type="text" placeholder="Link Google Drive (https://drive.google.com/...)" value="${escapeHtml(row.link)}"
-        oninput="materialDraftRows[${i}].link=this.value" style="flex:1;padding:11px 13px;border:1px solid var(--border);border-radius:10px;background:rgba(16,24,40,0.03);color:var(--ink);font-family:inherit;font-size:14px;">
+        oninput="materialDraftRows[${i}].link=this.value" style="flex:1;min-width:180px;padding:11px 13px;border:1px solid var(--border);border-radius:10px;background:rgba(16,24,40,0.03);color:var(--ink);font-family:inherit;font-size:14px;">
+      <select onchange="materialDraftRows[${i}].type=this.value" style="flex:0 0 130px;padding:11px 8px;border:1px solid var(--border);border-radius:10px;background:rgba(16,24,40,0.03);color:var(--ink);font-family:inherit;font-size:13px;">
+        <option value="de" ${(row.type||'de')==='de'?'selected':''}>📄 Đề thi</option>
+        <option value="dapan" ${row.type==='dapan'?'selected':''}>✅ Đáp án</option>
+      </select>
       ${materialDraftRows.length>1 ? `<button type="button" class="btn-mini danger" onclick="removeMaterialRow(${i})">✕</button>` : ''}
     </div>`).join('');
 }
 
 function addMaterialRow(){
-  materialDraftRows.push({ label:'', link:'' });
+  materialDraftRows.push({ label:'', link:'', type:'de' });
   renderMaterialRows();
 }
 
 function removeMaterialRow(i){
   materialDraftRows.splice(i,1);
-  if(materialDraftRows.length===0) materialDraftRows.push({ label:'', link:'' });
+  if(materialDraftRows.length===0) materialDraftRows.push({ label:'', link:'', type:'de' });
   renderMaterialRows();
 }
 
@@ -1602,7 +1789,7 @@ function adminEditCourse(courseId){
   document.getElementById('crsTitle').value = course.title || '';
   document.getElementById('crsDesc').value = course.description || '';
   document.getElementById('crsPrice').value = course.price ?? 0;
-  materialDraftRows = [{ label:'', link:'' }];
+  materialDraftRows = [{ label:'', link:'', type:'de' }];
   renderMaterialRows();
   document.getElementById('btnCancelCourseEdit').classList.remove('hidden');
   renderAnswerKeyGrid(getCourseAnswerKey(course));
@@ -1631,8 +1818,9 @@ async function loadAdminCourses(){
 
   listEl.innerHTML = adminCourses.map(c=>{
     const materialsHtml = (c.course_materials||[]).map(m=>{
+      const isDapan = materialType(m)==='dapan';
       return `<div class="course-file-chip">
-        <a href="${escapeHtml(m.drive_link)}" target="_blank" rel="noopener">📄 ${escapeHtml(m.label || 'Tài liệu PDF')}</a>
+        <a href="${escapeHtml(m.drive_link)}" target="_blank" rel="noopener">${isDapan?'✅':'📄'} ${escapeHtml(m.label || 'Tài liệu PDF')} ${isDapan?'<i style="color:var(--teal);font-style:normal;font-size:10.5px;">(đáp án)</i>':''}</a>
         <button title="Xoá link" onclick="adminDeleteCourseMaterial('${m.id}')">✕</button>
       </div>`;
     }).join('') || '<span class="empty-note">Chưa có link Google Drive nào.</span>';
@@ -1661,12 +1849,17 @@ async function loadAdminCourses(){
 async function saveCourseMaterials(courseId, rows){
   const toInsert = (rows||[])
     .filter(m=>m.link && m.link.trim())
-    .map(m=>({ course_id: courseId, label: m.label.trim() || 'Tài liệu PDF', drive_link: m.link.trim() }));
+    .map(m=>({ course_id: courseId, label: m.label.trim() || 'Tài liệu PDF', drive_link: m.link.trim(), loai: m.type === 'dapan' ? 'dapan' : 'de' }));
   if(toInsert.length){
     const { error } = await sb.from('course_materials').insert(toInsert);
     if(error) throw new Error('Lỗi lưu link Google Drive: ' + error.message);
   }
 }
+
+// Với dữ liệu cũ chưa gắn "loai" (trước khi có tính năng này), coi mặc định là file đề.
+function materialType(m){ return m && m.loai === 'dapan' ? 'dapan' : 'de'; }
+function getExamMaterials(course){ return (course?.course_materials||[]).filter(m=>materialType(m)==='de'); }
+function getAnswerMaterials(course){ return (course?.course_materials||[]).filter(m=>materialType(m)==='dapan'); }
 
 async function adminDeleteCourseMaterial(materialId){
   if(!confirm('Xoá link tài liệu này khỏi khoá học?')) return;
@@ -1818,7 +2011,7 @@ async function loadCoursesView(){
     const priceLabel = price > 0 ? formatVND(price) : 'Miễn phí';
     const hasAnswerKey = getCourseAnswerKey(c).some(a=>a.answer);
 
-    const filesHtml = (c.course_materials||[]).map(m=>
+    const filesHtml = getExamMaterials(c).map(m=>
       `<a href="${escapeHtml(m.drive_link)}" target="_blank" rel="noopener">📄 ${escapeHtml(m.label || 'Tài liệu PDF')}</a>`
     ).join('');
 
@@ -1870,8 +2063,8 @@ function driveEmbedUrl(link){
   return null;
 }
 
-function renderPdfPanel(containerId, materials){
-  pdfPanelState[containerId] = { materials: materials||[], activeIdx: 0 };
+function renderPdfPanel(containerId, materials, emptyMessage){
+  pdfPanelState[containerId] = { materials: materials||[], activeIdx: 0, emptyMessage };
   redrawPdfPanel(containerId);
 }
 
@@ -1888,7 +2081,7 @@ function redrawPdfPanel(containerId){
   if(!st || !el) return;
 
   if(!st.materials.length){
-    el.innerHTML = '<div class="pdf-frame-wrap"><div class="pdf-fallback">Khoá học này chưa có link tài liệu.</div></div>';
+    el.innerHTML = `<div class="pdf-frame-wrap"><div class="pdf-fallback">${escapeHtml(st.emptyMessage || 'Khoá học này chưa có link tài liệu.')}</div></div>`;
     return;
   }
 
@@ -1912,7 +2105,7 @@ async function openCourseAnswers(courseId){
   if(!course) return;
 
   document.getElementById('viewAnswersTitle').textContent = course.title;
-  renderPdfPanel('answersPdfPanel', course.course_materials || []);
+  renderPdfPanel('answersPdfPanel', getAnswerMaterials(course), 'Khoá học này chưa có file đáp án PDF. Vui lòng liên hệ giáo viên để được bổ sung.');
 
   const answers = getCourseAnswerKey(course);
   const gridEl = document.getElementById('viewAnswersGrid');
@@ -2035,7 +2228,7 @@ function startCourseExam(courseId){
   document.getElementById('examTakeTitle').textContent = course.title;
   document.getElementById('examExitNote').textContent = '';
   document.getElementById('examTakeMsg').textContent = '';
-  renderPdfPanel('examPdfPanel', course.course_materials || []);
+  renderPdfPanel('examPdfPanel', getExamMaterials(course), 'Khoá học này chưa có file đề PDF.');
   renderExamAnswerGrid();
   startExamTimer();
 
@@ -2109,9 +2302,114 @@ async function submitExamAttempt(){
     <div class="rb-item glass"><div class="val">${total}</div><div class="lbl">Câu đã làm</div></div>
     <div class="rb-item glass"><div class="val">${finishedExitCount}</div><div class="lbl">Số lần thoát trang</div></div>
   `;
+
+  // Lưu lại để học viên có thể bấm "Xem lại đáp án chi tiết" ngay trên màn kết quả.
+  lastAttemptCourse = finishedCourse;
+  lastAttemptAnswers = studentAnswers;
+  const reviewBtn = document.getElementById('btnReviewLastAttempt');
+  if(reviewBtn) reviewBtn.classList.remove('hidden');
+
   currentExamCourse = null;
   examStartTime = null;
   showView('result');
+}
+
+/* =========================================================================
+   9e. HỌC VIÊN — XEM LẠI BÀI LÀM (đúng/sai từng câu + giải thích)
+   ========================================================================= */
+function reviewLastAttempt(){
+  if(!lastAttemptCourse || !lastAttemptAnswers){
+    alert('Không tìm thấy dữ liệu bài làm để xem lại.');
+    return;
+  }
+  showExamReview(lastAttemptCourse, lastAttemptAnswers, 'result');
+}
+
+// Mở màn xem lại chi tiết cho MỘT lần làm bài bất kỳ (dùng cả cho bài vừa nộp lẫn lịch sử cũ).
+function showExamReview(course, studentAnswers, returnView){
+  examReviewData = { course, studentAnswers, returnView: returnView || 'dashboard' };
+  document.getElementById('examReviewTitle').textContent = course.title;
+  document.getElementById('reviewOnlyWrong').checked = false;
+  renderPdfPanel('reviewPdfPanel', getAnswerMaterials(course), 'Khoá học này chưa có file đáp án PDF. Vui lòng liên hệ giáo viên để được bổ sung.');
+  renderExamReviewList();
+  showView('examreview');
+}
+
+function renderExamReviewList(){
+  if(!examReviewData) return;
+  const { course, studentAnswers } = examReviewData;
+  const onlyWrong = document.getElementById('reviewOnlyWrong').checked;
+
+  const keyArr = getCourseAnswerKey(course);
+  const keyMap = {};
+  keyArr.forEach(k=>{ keyMap[k.no] = k; });
+  const studentMap = {};
+  (studentAnswers||[]).forEach(a=>{ studentMap[a.no] = a.answer; });
+
+  let correctCount = 0, wrongCount = 0, blankCount = 0;
+  const rows = [];
+  for(let no=1; no<=VACT_TOTAL_QUESTIONS; no++){
+    const correctAns = keyMap[no]?.answer || '';
+    const studentAns = studentMap[no] || '';
+    const explanation = keyMap[no]?.explanation || '';
+    let status;
+    if(!studentAns){ status = 'blank'; blankCount++; }
+    else if(correctAns && studentAns === correctAns){ status = 'correct'; correctCount++; }
+    else { status = 'wrong'; wrongCount++; }
+    rows.push({ no, correctAns, studentAns, explanation, status });
+  }
+
+  document.getElementById('examReviewSummary').innerHTML = `
+    <div class="rb-item glass"><div class="val" style="color:var(--teal);">${correctCount}</div><div class="lbl">Câu đúng</div></div>
+    <div class="rb-item glass"><div class="val" style="color:var(--coral);">${wrongCount}</div><div class="lbl">Câu sai</div></div>
+    <div class="rb-item glass"><div class="val" style="color:#D97706;">${blankCount}</div><div class="lbl">Bỏ trống</div></div>
+  `;
+
+  const visibleRows = onlyWrong ? rows.filter(r=>r.status!=='correct') : rows;
+  const listEl = document.getElementById('examReviewList');
+  if(!visibleRows.length){
+    listEl.innerHTML = '<p class="empty-note">Không có câu nào phù hợp bộ lọc — làm tốt lắm! 🎉</p>';
+    return;
+  }
+
+  listEl.innerHTML = visibleRows.map(r=>{
+    const badgeLabel = r.status==='correct' ? 'Đúng' : (r.status==='wrong' ? 'Sai' : 'Bỏ trống');
+    const studentLabel = r.studentAns
+      ? `<span class="${r.status==='correct'?'ok':'bad'}">${escapeHtml(r.studentAns)}</span>`
+      : '<span class="bad">— chưa chọn —</span>';
+    return `<div class="review-item ${r.status}">
+      <div class="ri-head">
+        <span class="ri-qno">Câu ${r.no}</span>
+        <span class="ri-badge">${badgeLabel}</span>
+      </div>
+      <div class="ri-answers">Bạn chọn: <b>${studentLabel}</b> &nbsp;·&nbsp; Đáp án đúng: <b class="ok">${escapeHtml(r.correctAns || '—')}</b></div>
+      ${r.explanation ? `<div class="ri-expl"><b>Giải thích:</b><div>${r.explanation}</div></div>` : ''}
+    </div>`;
+  }).join('');
+}
+
+function exitExamReview(){
+  const returnView = examReviewData?.returnView || 'dashboard';
+  examReviewData = null;
+  showView(returnView);
+}
+
+// Xem lại một lần làm bài trong lịch sử (không nhất thiết là lần vừa nộp gần nhất).
+async function reviewPastAttempt(attemptId){
+  const attempt = userExamAttempts.find(a=>a.id===attemptId);
+  if(!attempt){ alert('Không tìm thấy lần làm bài này.'); return; }
+
+  const { data: course, error } = await sb
+    .from('courses')
+    .select('*, course_materials(*), course_answer_keys(answer_key)')
+    .eq('id', attempt.course_id)
+    .single();
+
+  if(error || !course){
+    alert('Không tải được dữ liệu khoá học để xem lại: ' + (error?.message || ''));
+    return;
+  }
+  showExamReview(course, attempt.answers || [], 'dashboard');
 }
 
 /* =========================================================================
