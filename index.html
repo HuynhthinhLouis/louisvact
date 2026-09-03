@@ -325,6 +325,16 @@
   .answer-cell select.unfilled{border-color:rgba(220,38,38,0.55);}
   .answer-key-progress{font-family:'IBM Plex Mono',monospace;font-size:12.5px;color:var(--ink-soft);margin-top:14px;}
   .answer-key-progress b{color:var(--gold);}
+  .answer-key-progress .flag-count{color:#D97706;}
+  /* nút cờ "đánh dấu xem lại" trên mỗi câu khi học viên làm bài trực tuyến */
+  .flag-btn{
+    border:1px solid var(--border);background:rgba(16,24,40,0.03);color:var(--ink-dim);
+    font-size:10px;line-height:1;border-radius:6px;padding:2px 5px;cursor:pointer;
+    transition:all .15s ease;
+  }
+  .flag-btn:hover{border-color:#D97706;color:#D97706;}
+  .answer-cell.flagged{background:rgba(217,119,6,0.08);border:1px solid rgba(217,119,6,0.35);border-radius:9px;padding:4px 2px 6px;}
+  .answer-cell.flagged .flag-btn{background:#D97706;border-color:#D97706;color:#FFFFFF;}
   .answer-cell{position:relative;}
   .answer-cell .cell-head{display:flex;flex-direction:column;align-items:center;gap:4px;}
   .expl-toggle{border:none;background:none;color:var(--ink-dim);font-size:11px;cursor:pointer;padding:0;line-height:1;}
@@ -399,6 +409,12 @@
   /* ---------- SPLIT VIEW: file đề (trái) + đề/đáp án (phải) ---------- */
   .split-view{display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start;margin-top:20px;}
   @media (max-width:920px){.split-view{grid-template-columns:1fr;}}
+  /* biến thể 3 cột: file đề — bài làm học viên — file đáp án (màn Xem lại bài làm) */
+  .split-view-3{grid-template-columns:0.9fr 1.15fr 0.9fr;}
+  @media (max-width:1180px){.split-view-3{grid-template-columns:1fr 1fr;}
+    .split-view-3 .split-pane:nth-child(3){grid-column:1/-1;}}
+  @media (max-width:920px){.split-view-3{grid-template-columns:1fr;}
+    .split-view-3 .split-pane:nth-child(3){grid-column:auto;}}
 
   /* ---------- ĐỒNG HỒ ĐẾM NGƯỢC LÀM BÀI ---------- */
   .exam-timer{
@@ -438,6 +454,7 @@
   .review-item.correct .ri-badge{background:rgba(13,148,136,0.15);color:var(--teal);}
   .review-item.wrong .ri-badge{background:rgba(220,38,38,0.13);color:var(--coral);}
   .review-item.blank .ri-badge{background:rgba(217,119,6,0.15);color:#D97706;}
+  .review-item .ri-flag{font-size:10.5px;font-weight:700;padding:3px 9px;border-radius:999px;background:rgba(217,119,6,0.15);color:#D97706;}
   .review-item .ri-answers{font-family:'IBM Plex Mono',monospace;font-size:12.5px;color:var(--ink-soft);margin-top:6px;}
   .review-item .ri-answers b{color:var(--ink);}
   .review-item .ri-answers .ok{color:var(--teal);font-weight:700;}
@@ -792,20 +809,25 @@
         <h2 style="font-size:26px;" id="examReviewTitle">Đề thi</h2>
         <div class="review-summary" id="examReviewSummary"></div>
       </div>
-      <div class="split-view">
+      <div class="split-view split-view-3">
         <div class="split-pane">
-          <h4>📄 File đáp án</h4>
-          <div id="reviewPdfPanel"></div>
+          <h4>📄 File đề</h4>
+          <div id="reviewExamPdfPanel"></div>
         </div>
         <div class="split-pane">
-          <h4>📝 Chi tiết từng câu</h4>
+          <h4>📝 Bài làm của bạn</h4>
           <div class="split-scroll">
             <label class="review-filter"><input type="checkbox" id="reviewOnlyWrong" onchange="renderExamReviewList()"> Chỉ hiện những câu làm sai / bỏ trống</label>
+            <label class="review-filter"><input type="checkbox" id="reviewOnlyFlagged" onchange="renderExamReviewList()"> Chỉ hiện những câu đã đánh dấu xem lại 🚩</label>
             <div id="examReviewList"></div>
             <div class="course-form-actions">
               <button class="btn-cancel-edit" onclick="exitExamReview()">Quay lại</button>
             </div>
           </div>
+        </div>
+        <div class="split-pane">
+          <h4>✅ File đáp án</h4>
+          <div id="reviewAnswerPdfPanel"></div>
         </div>
       </div>
     </div>
@@ -986,6 +1008,7 @@ let examReviewData = null;      // {course, studentAnswers, returnView} đang hi
 // --- Làm bài trực tuyến + đếm số lần thoát tab ---
 let currentExamCourse = null;
 let examExitCount = 0;
+let examFlaggedQuestions = new Set(); // các số câu (1..120) học viên đánh dấu "xem lại" trong lúc làm bài
 let examStartTime = null; // dùng để tự động ghi nhận thời gian học khi nộp bài
 const EXAM_DURATION_MINUTES = 150; // mỗi khoá học được tính 150 phút làm bài
 let examDeadline = null;      // mốc thời gian (ms) phải nộp bài
@@ -2153,8 +2176,11 @@ function renderExamAnswerGrid(){
     const cells = Array.from({length: sec.count}).map(()=>{
       qNo++;
       const opts = ['','A','B','C','D'].map(letter=>`<option value="${letter}">${letter||'—'}</option>`).join('');
-      return `<div class="answer-cell">
-        <span class="qno">C${qNo}</span>
+      return `<div class="answer-cell" id="excell-${qNo}">
+        <div style="display:flex;align-items:center;gap:4px;">
+          <span class="qno">C${qNo}</span>
+          <button type="button" class="flag-btn" title="Đánh dấu xem lại" onclick="toggleExamFlag(${qNo})" id="exflag-${qNo}">🚩</button>
+        </div>
         <select id="exq-${qNo}" onchange="updateExamProgress()">${opts}</select>
       </div>`;
     }).join('');
@@ -2167,6 +2193,15 @@ function renderExamAnswerGrid(){
   updateExamProgress();
 }
 
+// Đánh dấu / bỏ đánh dấu một câu để "xem lại" trước khi nộp bài — không ảnh hưởng đáp án đã chọn.
+function toggleExamFlag(qNo){
+  if(examFlaggedQuestions.has(qNo)) examFlaggedQuestions.delete(qNo);
+  else examFlaggedQuestions.add(qNo);
+  const cell = document.getElementById('excell-'+qNo);
+  if(cell) cell.classList.toggle('flagged', examFlaggedQuestions.has(qNo));
+  updateExamProgress();
+}
+
 function updateExamProgress(){
   let filled = 0;
   for(let i=1;i<=VACT_TOTAL_QUESTIONS;i++){
@@ -2174,14 +2209,15 @@ function updateExamProgress(){
     if(sel && sel.value) filled++;
   }
   const el = document.getElementById('examTakeProgress');
-  if(el) el.innerHTML = `Đã làm <b>${filled}/${VACT_TOTAL_QUESTIONS}</b> câu.`;
+  if(el) el.innerHTML = `Đã làm <b>${filled}/${VACT_TOTAL_QUESTIONS}</b> câu` +
+    (examFlaggedQuestions.size ? ` · <span class="flag-count">🚩 Đã đánh dấu ${examFlaggedQuestions.size} câu để xem lại</span>` : '') + '.';
 }
 
 function collectExamAnswers(){
   const arr = [];
   for(let i=1;i<=VACT_TOTAL_QUESTIONS;i++){
     const sel = document.getElementById('exq-'+i);
-    arr.push({ no: i, answer: sel ? sel.value : '' });
+    arr.push({ no: i, answer: sel ? sel.value : '', flagged: examFlaggedQuestions.has(i) });
   }
   return arr;
 }
@@ -2244,6 +2280,7 @@ function startCourseExam(courseId){
   }
   currentExamCourse = course;
   examExitCount = 0;
+  examFlaggedQuestions = new Set();
   examStartTime = Date.now();
   document.getElementById('examTakeTitle').textContent = course.title;
   document.getElementById('examExitNote').textContent = '';
@@ -2350,7 +2387,9 @@ function showExamReview(course, studentAnswers, returnView){
   examReviewData = { course, studentAnswers, returnView: returnView || 'dashboard' };
   document.getElementById('examReviewTitle').textContent = course.title;
   document.getElementById('reviewOnlyWrong').checked = false;
-  renderPdfPanel('reviewPdfPanel', getAnswerMaterials(course), 'Khoá học này chưa có file đáp án PDF. Vui lòng liên hệ giáo viên để được bổ sung.');
+  document.getElementById('reviewOnlyFlagged').checked = false;
+  renderPdfPanel('reviewExamPdfPanel', getExamMaterials(course), 'Khoá học này chưa có file đề PDF.');
+  renderPdfPanel('reviewAnswerPdfPanel', getAnswerMaterials(course), 'Khoá học này chưa có file đáp án PDF. Vui lòng liên hệ giáo viên để được bổ sung.');
   renderExamReviewList();
   showView('examreview');
 }
@@ -2359,33 +2398,40 @@ function renderExamReviewList(){
   if(!examReviewData) return;
   const { course, studentAnswers } = examReviewData;
   const onlyWrong = document.getElementById('reviewOnlyWrong').checked;
+  const onlyFlagged = document.getElementById('reviewOnlyFlagged').checked;
 
   const keyArr = getCourseAnswerKey(course);
   const keyMap = {};
   keyArr.forEach(k=>{ keyMap[k.no] = k; });
   const studentMap = {};
-  (studentAnswers||[]).forEach(a=>{ studentMap[a.no] = a.answer; });
+  // studentAnswers cũ (trước khi có tính năng đánh dấu) chỉ có {no, answer}; bài mới có thêm {flagged}.
+  (studentAnswers||[]).forEach(a=>{ studentMap[a.no] = { answer: a.answer, flagged: !!a.flagged }; });
 
-  let correctCount = 0, wrongCount = 0, blankCount = 0;
+  let correctCount = 0, wrongCount = 0, blankCount = 0, flaggedCount = 0;
   const rows = [];
   for(let no=1; no<=VACT_TOTAL_QUESTIONS; no++){
     const correctAns = keyMap[no]?.answer || '';
-    const studentAns = studentMap[no] || '';
+    const studentEntry = studentMap[no] || { answer:'', flagged:false };
+    const studentAns = studentEntry.answer || '';
+    const flagged = !!studentEntry.flagged;
     const explanation = keyMap[no]?.explanation || '';
     let status;
     if(!studentAns){ status = 'blank'; blankCount++; }
     else if(correctAns && studentAns === correctAns){ status = 'correct'; correctCount++; }
     else { status = 'wrong'; wrongCount++; }
-    rows.push({ no, correctAns, studentAns, explanation, status });
+    if(flagged) flaggedCount++;
+    rows.push({ no, correctAns, studentAns, explanation, status, flagged });
   }
 
   document.getElementById('examReviewSummary').innerHTML = `
     <div class="rb-item glass"><div class="val" style="color:var(--teal);">${correctCount}</div><div class="lbl">Câu đúng</div></div>
     <div class="rb-item glass"><div class="val" style="color:var(--coral);">${wrongCount}</div><div class="lbl">Câu sai</div></div>
     <div class="rb-item glass"><div class="val" style="color:#D97706;">${blankCount}</div><div class="lbl">Bỏ trống</div></div>
+    ${flaggedCount ? `<div class="rb-item glass"><div class="val" style="color:#D97706;">🚩 ${flaggedCount}</div><div class="lbl">Đã đánh dấu</div></div>` : ''}
   `;
 
-  const visibleRows = onlyWrong ? rows.filter(r=>r.status!=='correct') : rows;
+  let visibleRows = onlyWrong ? rows.filter(r=>r.status!=='correct') : rows;
+  if(onlyFlagged) visibleRows = visibleRows.filter(r=>r.flagged);
   const listEl = document.getElementById('examReviewList');
   if(!visibleRows.length){
     listEl.innerHTML = '<p class="empty-note">Không có câu nào phù hợp bộ lọc — làm tốt lắm! 🎉</p>';
@@ -2400,7 +2446,10 @@ function renderExamReviewList(){
     return `<div class="review-item ${r.status}">
       <div class="ri-head">
         <span class="ri-qno">Câu ${r.no}</span>
-        <span class="ri-badge">${badgeLabel}</span>
+        <div style="display:flex;gap:6px;align-items:center;">
+          ${r.flagged ? '<span class="ri-flag">🚩 Đã đánh dấu</span>' : ''}
+          <span class="ri-badge">${badgeLabel}</span>
+        </div>
       </div>
       <div class="ri-answers">Bạn chọn: <b>${studentLabel}</b> &nbsp;·&nbsp; Đáp án đúng: <b class="ok">${escapeHtml(r.correctAns || '—')}</b></div>
       ${r.explanation ? `<div class="ri-expl"><b>Giải thích:</b><div>${r.explanation}</div></div>` : ''}
