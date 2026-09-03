@@ -859,10 +859,17 @@
         </div>
 
         <div class="field file-input-wrap" style="margin-top:6px;">
-          <label>Link Google Drive tài liệu PDF</label>
-          <div id="materialInputs"></div>
-          <button type="button" class="btn-mini save" onclick="addMaterialRow()" style="margin-top:4px;">+ Thêm link</button>
-          <div class="file-hint">Dán link chia sẻ Google Drive của file PDF (nhớ đặt chế độ chia sẻ "Bất kỳ ai có link" để học viên xem được). Chọn đúng "Loại file": <b>Đề thi</b> sẽ hiện khi học viên làm bài trực tuyến, <b>Đáp án</b> sẽ hiện khi học viên bấm "Xem đáp án" hoặc "Xem lại bài làm". Khi sửa khoá học, các link mới thêm sẽ được cộng vào, không thay thế link cũ — xoá link cũ ở danh sách khoá học bên dưới.</div>
+          <label>📄 Link Google Drive file đề thi (PDF)</label>
+          <div id="examMaterialInputs"></div>
+          <button type="button" class="btn-mini save" onclick="addMaterialRow('de')" style="margin-top:4px;">+ Thêm link đề thi</button>
+          <div class="file-hint">Dán link chia sẻ Google Drive của file đề thi PDF (nhớ đặt chế độ chia sẻ "Bất kỳ ai có link" để học viên xem được). File này sẽ hiện khi học viên bấm "Làm bài trực tuyến" và "Xem đáp án".</div>
+        </div>
+
+        <div class="field file-input-wrap" style="margin-top:14px;">
+          <label>✅ Link Google Drive file đáp án (PDF)</label>
+          <div id="answerMaterialInputs"></div>
+          <button type="button" class="btn-mini save" onclick="addMaterialRow('dapan')" style="margin-top:4px;">+ Thêm link đáp án</button>
+          <div class="file-hint">Dán link chia sẻ Google Drive của file đáp án PDF (nhớ đặt chế độ chia sẻ "Bất kỳ ai có link" để học viên xem được). File này sẽ hiện khi học viên bấm "Xem đáp án" hoặc "Xem lại bài làm". Khi sửa khoá học, các link mới thêm sẽ được cộng vào, không thay thế link cũ — xoá link cũ ở danh sách khoá học bên dưới.</div>
         </div>
 
         <div class="answer-key-wrap">
@@ -969,7 +976,8 @@ let userExamAttempts = [];    // course_exam_attempts của user hiện tại
 let userStudySessions = [];   // study_sessions của user hiện tại
 let currentStudyGoal = { weekly_hours_goal: 0, weekly_courses_goal: 0 };
 let editingCourseId = null; // null = đang tạo mới, có giá trị = đang sửa khoá học này
-let materialDraftRows = []; // các link Google Drive MỚI sẽ thêm khi lưu khoá học: [{label, link, type}] — type: 'de' | 'dapan'
+let examMaterialDraftRows = [];   // các link Google Drive ĐỀ THI mới sẽ thêm khi lưu khoá học: [{label, link}]
+let answerMaterialDraftRows = []; // các link Google Drive ĐÁP ÁN PDF mới sẽ thêm khi lưu khoá học: [{label, link}]
 let coursesCache = []; // cache danh sách khoá học cho học viên (dùng khi bấm "Làm bài")
 let lastAttemptCourse = null;   // khoá học vừa nộp bài, dùng để mở màn "Xem lại đáp án chi tiết"
 let lastAttemptAnswers = null;  // bài làm của học viên vừa nộp
@@ -1749,36 +1757,42 @@ function resetCourseForm(){
   document.getElementById('btnCancelCourseEdit').classList.add('hidden');
   setCourseFormMsg('', true);
   renderAnswerKeyGrid();
-  materialDraftRows = [{ label:'', link:'', type:'de' }];
-  renderMaterialRows();
+  examMaterialDraftRows = [{ label:'', link:'' }];
+  answerMaterialDraftRows = [{ label:'', link:'' }];
+  renderMaterialRows('de');
+  renderMaterialRows('dapan');
 }
 
-/* --- Quản lý các dòng nhập link Google Drive (chỉ áp dụng cho link MỚI) --- */
-function renderMaterialRows(){
-  const wrap = document.getElementById('materialInputs');
-  wrap.innerHTML = materialDraftRows.map((row,i)=>`
+/* --- Quản lý các dòng nhập link Google Drive (chỉ áp dụng cho link MỚI) ---
+   type: 'de' (đề thi) hoặc 'dapan' (đáp án PDF) — mỗi loại có mảng & khung nhập riêng. */
+function materialRowsFor(type){ return type==='dapan' ? answerMaterialDraftRows : examMaterialDraftRows; }
+function materialWrapIdFor(type){ return type==='dapan' ? 'answerMaterialInputs' : 'examMaterialInputs'; }
+
+function renderMaterialRows(type){
+  const rows = materialRowsFor(type);
+  const wrap = document.getElementById(materialWrapIdFor(type));
+  if(!wrap) return;
+  const namePlaceholder = type==='dapan' ? 'Tên tài liệu (VD: Đáp án đề số 1)' : 'Tên tài liệu (VD: Đề thi số 1)';
+  wrap.innerHTML = rows.map((row,i)=>`
     <div class="material-row" style="display:flex;gap:8px;margin-bottom:8px;flex-wrap:wrap;">
-      <input type="text" placeholder="Tên tài liệu (VD: Đề thi số 1)" value="${escapeHtml(row.label)}"
-        oninput="materialDraftRows[${i}].label=this.value" style="flex:0 0 32%;padding:11px 13px;border:1px solid var(--border);border-radius:10px;background:rgba(16,24,40,0.03);color:var(--ink);font-family:inherit;font-size:14px;">
+      <input type="text" placeholder="${namePlaceholder}" value="${escapeHtml(row.label)}"
+        oninput="materialRowsFor('${type}')[${i}].label=this.value" style="flex:0 0 32%;padding:11px 13px;border:1px solid var(--border);border-radius:10px;background:rgba(16,24,40,0.03);color:var(--ink);font-family:inherit;font-size:14px;">
       <input type="text" placeholder="Link Google Drive (https://drive.google.com/...)" value="${escapeHtml(row.link)}"
-        oninput="materialDraftRows[${i}].link=this.value" style="flex:1;min-width:180px;padding:11px 13px;border:1px solid var(--border);border-radius:10px;background:rgba(16,24,40,0.03);color:var(--ink);font-family:inherit;font-size:14px;">
-      <select onchange="materialDraftRows[${i}].type=this.value" style="flex:0 0 130px;padding:11px 8px;border:1px solid var(--border);border-radius:10px;background:rgba(16,24,40,0.03);color:var(--ink);font-family:inherit;font-size:13px;">
-        <option value="de" ${(row.type||'de')==='de'?'selected':''}>📄 Đề thi</option>
-        <option value="dapan" ${row.type==='dapan'?'selected':''}>✅ Đáp án</option>
-      </select>
-      ${materialDraftRows.length>1 ? `<button type="button" class="btn-mini danger" onclick="removeMaterialRow(${i})">✕</button>` : ''}
+        oninput="materialRowsFor('${type}')[${i}].link=this.value" style="flex:1;min-width:180px;padding:11px 13px;border:1px solid var(--border);border-radius:10px;background:rgba(16,24,40,0.03);color:var(--ink);font-family:inherit;font-size:14px;">
+      ${rows.length>1 ? `<button type="button" class="btn-mini danger" onclick="removeMaterialRow('${type}',${i})">✕</button>` : ''}
     </div>`).join('');
 }
 
-function addMaterialRow(){
-  materialDraftRows.push({ label:'', link:'', type:'de' });
-  renderMaterialRows();
+function addMaterialRow(type){
+  materialRowsFor(type).push({ label:'', link:'' });
+  renderMaterialRows(type);
 }
 
-function removeMaterialRow(i){
-  materialDraftRows.splice(i,1);
-  if(materialDraftRows.length===0) materialDraftRows.push({ label:'', link:'', type:'de' });
-  renderMaterialRows();
+function removeMaterialRow(type, i){
+  const rows = materialRowsFor(type);
+  rows.splice(i,1);
+  if(rows.length===0) rows.push({ label:'', link:'' });
+  renderMaterialRows(type);
 }
 
 function adminEditCourse(courseId){
@@ -1789,8 +1803,10 @@ function adminEditCourse(courseId){
   document.getElementById('crsTitle').value = course.title || '';
   document.getElementById('crsDesc').value = course.description || '';
   document.getElementById('crsPrice').value = course.price ?? 0;
-  materialDraftRows = [{ label:'', link:'', type:'de' }];
-  renderMaterialRows();
+  examMaterialDraftRows = [{ label:'', link:'' }];
+  answerMaterialDraftRows = [{ label:'', link:'' }];
+  renderMaterialRows('de');
+  renderMaterialRows('dapan');
   document.getElementById('btnCancelCourseEdit').classList.remove('hidden');
   renderAnswerKeyGrid(getCourseAnswerKey(course));
   setCourseFormMsg('Đang sửa khoá học này. Dán thêm link Google Drive nếu muốn bổ sung.', true);
@@ -1846,10 +1862,10 @@ async function loadAdminCourses(){
   }).join('');
 }
 
-async function saveCourseMaterials(courseId, rows){
+async function saveCourseMaterials(courseId, rows, type){
   const toInsert = (rows||[])
     .filter(m=>m.link && m.link.trim())
-    .map(m=>({ course_id: courseId, label: m.label.trim() || 'Tài liệu PDF', drive_link: m.link.trim(), loai: m.type === 'dapan' ? 'dapan' : 'de' }));
+    .map(m=>({ course_id: courseId, label: m.label.trim() || (type==='dapan' ? 'File đáp án PDF' : 'Tài liệu PDF'), drive_link: m.link.trim(), loai: type==='dapan' ? 'dapan' : 'de' }));
   if(toInsert.length){
     const { error } = await sb.from('course_materials').insert(toInsert);
     if(error) throw new Error('Lỗi lưu link Google Drive: ' + error.message);
@@ -1912,7 +1928,8 @@ async function adminSaveCourse(){
   const title = document.getElementById('crsTitle').value.trim();
   const description = document.getElementById('crsDesc').value.trim();
   const price = Number(document.getElementById('crsPrice').value);
-  const newMaterials = materialDraftRows.filter(m=>m.link && m.link.trim());
+  const newExamMaterials = examMaterialDraftRows.filter(m=>m.link && m.link.trim());
+  const newAnswerMaterials = answerMaterialDraftRows.filter(m=>m.link && m.link.trim());
   const answerKey = collectAnswerKeyFromGrid();
   const filled = updateAnswerKeyProgress();
 
@@ -1922,7 +1939,7 @@ async function adminSaveCourse(){
   if(isNaN(price) || price < 0){
     setCourseFormMsg('Giá tiền không hợp lệ.', false); return;
   }
-  if(!editingCourseId && newMaterials.length === 0){
+  if(!editingCourseId && newExamMaterials.length === 0){
     setCourseFormMsg('Vui lòng dán ít nhất 1 link Google Drive đề thi.', false); return;
   }
   if(filled < VACT_TOTAL_QUESTIONS){
@@ -1947,8 +1964,11 @@ async function adminSaveCourse(){
     const { error: akErr } = await sb.from('course_answer_keys').upsert({ course_id: courseId, answer_key: answerKey });
     if(akErr) throw new Error('Lỗi lưu đáp án: ' + akErr.message);
 
-    if(newMaterials.length){
-      await saveCourseMaterials(courseId, newMaterials);
+    if(newExamMaterials.length){
+      await saveCourseMaterials(courseId, newExamMaterials, 'de');
+    }
+    if(newAnswerMaterials.length){
+      await saveCourseMaterials(courseId, newAnswerMaterials, 'dapan');
     }
 
     setCourseFormMsg(editingCourseId ? 'Đã cập nhật khoá học.' : 'Đã thêm khoá học mới.', true);
